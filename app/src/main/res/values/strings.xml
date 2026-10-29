@@ -136,4 +136,27 @@
     <string name="transcription_settings_title">Transcription</string>
     <string name="transcription_final_pass">Transcribe the whole recording again at the end</string>
     <string name="transcription_final_pass_body">After you stop, the whole recording is transcribed once more as one piece, so punctuation and sentences run naturally across it; the live preview stays as it is. Longer dictations take a few more seconds to finish. Recordings over %1$d minutes always use the faster method.</string>
+
+    <string name="transcription_remove_fillers">Remove fillers such as “yyy”, “eee” and “um”</string>
+    <string name="dictionary_open">Dictionary</string>
+    <string name="dictionary_title">Dictionary</string>
+    <string name="dictionary_intro">Teach Voicemator names and words it gets wrong. Whenever it hears the first form as a whole word or phrase, it writes the second. Case does not matter.</string>
+    <string name="dictionary_heard">When it writes</string>
+    <string name="dictionary_written">Write instead</string>
+    <string name="dictionary_add">Add</string>
+    <string name="dictionary_empty">No entries yet. For example: “voice mator” → “Voicemator”.</string>
+
+    <string name="transcribe_file_share_label">Transcribe with Voicemator</string>
+    <string name="transcribe_file_title">Transcribe recording</string>
+    <string name="transcribe_file_pick">Transcribe an audio file…</string>
+    <string name="transcribe_file_starting">Preparing…</string>
+    <string name="transcribe_file_decoding">Reading the recording…</string>
+    <string name="transcribe_file_transcribing">Transcribing… %1$d%%</string>
+    <string name="transcribe_file_share">Share</string>
+    <string name="transcribe_file_done">Done</string>
+    <string name="transcribe_file_open_app">Open Voicemator</string>
+    <string name="transcribe_file_model_missing">The speech model is not downloaded yet. Download it in Voicemator first.</string>
+    <string name="transcribe_file_no_file">No recording was shared.</string>
+    <string name="transcribe_file_unsupported">This file could not be read. It may not contain audio in a format this phone can decode.</string>
+    <string name="transcribe_file_too_long">The recording is too long. Files up to %1$d minutes are supported.</string>
 </resources>

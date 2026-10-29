@@ -11,9 +11,18 @@ class TranscriptionSettings private constructor(context: Context) {
 
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     private val mutableFinalPass = MutableStateFlow(preferences.getBoolean(KEY_FINAL_PASS, false))
+    private val mutableRemoveFillers = MutableStateFlow(preferences.getBoolean(KEY_REMOVE_FILLERS, true))
 
     /** Whether the whole recording is transcribed again as one piece after dictation stops. */
     val finalPass: StateFlow<Boolean> = mutableFinalPass.asStateFlow()
+
+    /** Whether hesitation sounds such as "yyy" and "um" are removed from transcriptions. */
+    val removeFillers: StateFlow<Boolean> = mutableRemoveFillers.asStateFlow()
+
+    fun setRemoveFillers(enabled: Boolean) {
+        preferences.edit { putBoolean(KEY_REMOVE_FILLERS, enabled) }
+        mutableRemoveFillers.value = enabled
+    }
 
     fun setFinalPass(enabled: Boolean) {
         preferences.edit { putBoolean(KEY_FINAL_PASS, enabled) }
@@ -23,6 +32,7 @@ class TranscriptionSettings private constructor(context: Context) {
     companion object {
         private const val PREFERENCES_NAME = "transcription"
         private const val KEY_FINAL_PASS = "final_pass"
+        private const val KEY_REMOVE_FILLERS = "remove_fillers"
 
         @Volatile
         private var instance: TranscriptionSettings? = null

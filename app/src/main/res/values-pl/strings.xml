@@ -138,4 +138,27 @@
     <string name="transcription_settings_title">Przepisywanie</string>
     <string name="transcription_final_pass">Na końcu przepisz całe nagranie jeszcze raz</string>
     <string name="transcription_final_pass_body">Po zatrzymaniu całe nagranie jest przepisywane jeszcze raz w jednym kawałku, więc interpunkcja i zdania układają się naturalnie w całym tekście; podgląd na żywo działa jak dotąd. Dłuższe dyktowania kończą się wtedy kilka sekund później. Nagrania dłuższe niż %1$d minuty zawsze używają szybszego sposobu.</string>
+
+    <string name="transcription_remove_fillers">Usuwaj wypełniacze, takie jak „yyy”, „eee” i „um”</string>
+    <string name="dictionary_open">Słownik</string>
+    <string name="dictionary_title">Słownik</string>
+    <string name="dictionary_intro">Naucz Voicematora imion i słów, które przekręca. Gdy rozpozna pierwszą formę jako całe słowo lub frazę, wpisze drugą. Wielkość liter nie ma znaczenia.</string>
+    <string name="dictionary_heard">Gdy napisze</string>
+    <string name="dictionary_written">Wpisz zamiast tego</string>
+    <string name="dictionary_add">Dodaj</string>
+    <string name="dictionary_empty">Brak wpisów. Na przykład: „voice mator” → „Voicemator”.</string>
+
+    <string name="transcribe_file_share_label">Przepisz w Voicematorze</string>
+    <string name="transcribe_file_title">Przepisz nagranie</string>
+    <string name="transcribe_file_pick">Przepisz plik audio…</string>
+    <string name="transcribe_file_starting">Przygotowuję…</string>
+    <string name="transcribe_file_decoding">Odczytuję nagranie…</string>
+    <string name="transcribe_file_transcribing">Przepisuję… %1$d%%</string>
+    <string name="transcribe_file_share">Udostępnij</string>
+    <string name="transcribe_file_done">Gotowe</string>
+    <string name="transcribe_file_open_app">Otwórz Voicemator</string>
+    <string name="transcribe_file_model_missing">Model mowy nie jest jeszcze pobrany. Najpierw pobierz go w Voicematorze.</string>
+    <string name="transcribe_file_no_file">Nie udostępniono żadnego nagrania.</string>
+    <string name="transcribe_file_unsupported">Nie udało się odczytać tego pliku. Może nie zawierać dźwięku w formacie obsługiwanym przez ten telefon.</string>
+    <string name="transcribe_file_too_long">Nagranie jest za długie. Obsługiwane są pliki do %1$d minut.</string>
 </resources>

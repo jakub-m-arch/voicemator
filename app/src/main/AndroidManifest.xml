@@ -27,6 +27,29 @@
         </activity>
 
         <activity
+            android:name=".files.TranscribeFileActivity"
+            android:exported="true"
+            android:label="@string/transcribe_file_share_label">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="application/ogg" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="audio/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".text.DictionaryActivity"
+            android:exported="false"
+            android:label="@string/dictionary_title" />
+
+        <activity
             android:name=".licenses.LicensesActivity"
             android:exported="false"
             android:label="@string/licenses_title" />

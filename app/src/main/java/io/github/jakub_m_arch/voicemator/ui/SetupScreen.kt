@@ -60,6 +60,8 @@ import io.github.jakub_m_arch.voicemator.licenses.LicensesActivity
 import io.github.jakub_m_arch.voicemator.model.ModelState
 import io.github.jakub_m_arch.voicemator.model.ParakeetModel
 import io.github.jakub_m_arch.voicemator.overlay.RecordingOverlay
+import io.github.jakub_m_arch.voicemator.files.TranscribeFileActivity
+import io.github.jakub_m_arch.voicemator.text.DictionaryActivity
 import kotlin.math.roundToInt
 
 @Composable
@@ -193,8 +195,13 @@ fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewM
 
 @Composable
 private fun TranscriptionSettingsCard() {
-    val settings = TranscriptionSettings.get(LocalContext.current)
+    val context = LocalContext.current
+    val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) context.startActivity(TranscribeFileActivity.intent(context, uri))
+    }
+    val settings = TranscriptionSettings.get(context)
     val finalPass by settings.finalPass.collectAsStateWithLifecycle()
+    val removeFillers by settings.removeFillers.collectAsStateWithLifecycle()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.transcription_settings_title), style = MaterialTheme.typography.titleMedium)
@@ -211,6 +218,20 @@ private fun TranscriptionSettingsCard() {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.transcription_remove_fillers),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(checked = removeFillers, onCheckedChange = settings::setRemoveFillers)
+            }
+            OutlinedButton(onClick = { context.startActivity(Intent(context, DictionaryActivity::class.java)) }) {
+                Text(stringResource(R.string.dictionary_open))
+            }
+            OutlinedButton(onClick = { pickAudio.launch(arrayOf("audio/*", "application/ogg")) }) {
+                Text(stringResource(R.string.transcribe_file_pick))
+            }
         }
     }
 }

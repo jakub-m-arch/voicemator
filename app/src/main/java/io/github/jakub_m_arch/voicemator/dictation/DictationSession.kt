@@ -9,11 +9,16 @@ import io.github.jakub_m_arch.voicemator.asr.SpeechTranscriber
 import io.github.jakub_m_arch.voicemator.audio.AudioRecorder
 import io.github.jakub_m_arch.voicemator.history.HistoryRepository
 import io.github.jakub_m_arch.voicemator.model.ModelStorage
+import io.github.jakub_m_arch.voicemator.text.PostProcessing
+import io.github.jakub_m_arch.voicemator.text.TextPostProcessor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -44,8 +49,16 @@ class DictationSession(context: Context, private val scope: CoroutineScope) {
     /** Loudness of the microphone, from 0 to 1. */
     val level: StateFlow<Float> = recorder.level
 
+    // The dictionary loads alongside the model; until it is ready the preview shows raw text.
+    private var loadedPostProcessor: TextPostProcessor? = null
+    private val postProcessor: Deferred<TextPostProcessor> = scope.async(Dispatchers.IO) {
+        PostProcessing.load(appContext).also { loadedPostProcessor = it }
+    }
+
     /** The text recognised so far, refreshed about once a second while recording. */
     val preview: StateFlow<String> = transcription.preview
+        .map { text -> loadedPostProcessor?.process(text) ?: text }
+        .stateIn(scope, SharingStarted.Eagerly, "")
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     fun start() = recorder.start(scope, transcription::append)
@@ -53,7 +66,7 @@ class DictationSession(context: Context, private val scope: CoroutineScope) {
     /** Stops recording and returns the text, saved to the history; empty if nothing was said. */
     suspend fun finish(): String {
         recorder.stop()
-        val text = transcription.finish()
+        val text = postProcessor.await().process(transcription.finish())
         if (text.isNotEmpty()) saveToHistory(text, transcription.recordedMillis)
         return text
     }
@@ -66,6 +79,7 @@ class DictationSession(context: Context, private val scope: CoroutineScope) {
 
     /** Frees the speech model. Call once the session is over. */
     fun close() {
+        postProcessor.cancel()
         transcriber.cancel()
         loadedTranscriber?.close()
     }

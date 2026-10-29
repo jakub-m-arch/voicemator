@@ -30,6 +30,10 @@ Hugging Face user leogaudin.
   or in a caption under the recording pill
 - Long dictations are transcribed in the background while you speak, so the text is ready right
   after you stop
+- Dictionary: teach it names and words it gets wrong ("voice mator" → "Voicemator")
+- Removes hesitation sounds such as "yyy", "eee" and "um" (can be turned off)
+- Transcribes audio files: share a voice message from WhatsApp, Messenger or a recorder app to
+  Voicemator, open a file with it, or pick one in Settings
 - Optional final pass: after you stop, the whole recording (up to three minutes) is transcribed
   again as one piece, for the most natural punctuation at the cost of a few seconds
 - Result copied to the clipboard, with a notification showing the text
@@ -135,6 +139,8 @@ then run:
 | `ChunkedTranscription` | Transcribes finished parts of the recording while you keep talking |
 | `RecordingSegmenter` | Cuts long recordings at a pause after about 10 seconds |
 | `SpeechTranscriber` | Wraps the sherpa-onnx offline recognizer |
+| `TextPostProcessor` | Removes fillers and applies the user's dictionary to every transcription |
+| `TranscribeFileActivity` | Share target that decodes an audio file (`AudioFileDecoder`) and transcribes it |
 | `HistoryRepository` | Saves dictations in a local Room database, with or without their text, as the history mode says |
 | `UsageStatistics` | Derives the numbers, the daily chart and the heatmap from the history |
 | `ModelDownloader` | Fetches the model through the system `DownloadManager` |
@@ -153,7 +159,8 @@ finishes to keep memory free.
 Voicemator has no analytics, accounts or servers. Audio is recorded into memory, transcribed on
 the device and discarded; only the text is placed on the clipboard. With full history (the
 default), the text is also saved in the app's private storage on the device, excluded from
-backups. Under Settings you can keep statistics only, which stores word counts, lengths and times
+backups. Transcriptions of shared audio files are shown but never saved. Under Settings you can
+keep statistics only, which stores word counts, lengths and times
 but no text, turn history off, remove saved texts, or clear everything. The app connects to the
 internet once, to download the speech model from Hugging Face, which sees the request like any
 other download.
