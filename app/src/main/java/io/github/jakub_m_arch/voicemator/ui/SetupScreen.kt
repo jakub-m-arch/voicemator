@@ -25,6 +25,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -45,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.jakub_m_arch.voicemator.R
 import io.github.jakub_m_arch.voicemator.accessibility.DictationAccessibilityService
+import io.github.jakub_m_arch.voicemator.accessibility.KeyboardButtonSettings
 import io.github.jakub_m_arch.voicemator.dictation.DictationRequirements
 import io.github.jakub_m_arch.voicemator.dictation.DictationService
 import io.github.jakub_m_arch.voicemator.dictation.DictationState
@@ -151,6 +153,7 @@ fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewM
                 Text(stringResource(R.string.button_open_settings))
             }
         }
+        if (hasAccessibility) KeyboardButtonCard()
 
         TryItStep(
             state = dictationState,
@@ -165,6 +168,29 @@ fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewM
 
         TextButton(onClick = { context.startActivity(Intent(context, LicensesActivity::class.java)) }) {
             Text(stringResource(R.string.licenses_title))
+        }
+    }
+}
+
+@Composable
+private fun KeyboardButtonCard() {
+    val settings = KeyboardButtonSettings.get(LocalContext.current)
+    val isEnabled by settings.isEnabled.collectAsStateWithLifecycle()
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.keyboard_button_switch),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(checked = isEnabled, onCheckedChange = settings::setEnabled)
+            }
+            Text(
+                stringResource(R.string.keyboard_button_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Window content is read only to find the focused text field when inserting a transcription. -->
+<!--
+    Window content is read only to find the focused text field when inserting a transcription.
+    Window changes are watched only to know when a keyboard is open, to show the mic button.
+-->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityEventTypes="typeWindowsChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
-    android:accessibilityFlags="flagRequestAccessibilityButton"
+    android:accessibilityFlags="flagRequestAccessibilityButton|flagRetrieveInteractiveWindows"
     android:canRetrieveWindowContent="true"
     android:description="@string/accessibility_description"
     android:isAccessibilityTool="false"

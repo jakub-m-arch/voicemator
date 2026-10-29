@@ -5,24 +5,32 @@ import android.accessibilityservice.AccessibilityService
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.provider.Settings
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityWindowInfo
 import androidx.core.content.ContextCompat
 import io.github.jakub_m_arch.voicemator.MainActivity
 import io.github.jakub_m_arch.voicemator.dictation.DictationRequirements
 import io.github.jakub_m_arch.voicemator.dictation.DictationService
 import io.github.jakub_m_arch.voicemator.dictation.DictationState
 import io.github.jakub_m_arch.voicemator.dictation.DictationStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 /**
- * Optional accessibility service that adds two things:
+ * Optional accessibility service that adds:
  *
- * - the system accessibility button (a floating button or a navigation bar button, as the user
- *   chooses) toggles dictation;
- * - finished transcriptions are pasted into the focused text field instead of only being copied.
+ * - a mic button at the keyboard whenever one is open ([KeyboardMicButton]);
+ * - the system accessibility shortcut (a floating button, the navigation bar button or holding
+ *   both volume keys, as the user chooses) to toggle dictation;
+ * - pasting finished transcriptions into the focused text field instead of only copying them.
  *
- * It reads window content only to find the focused field, and only when inserting text.
+ * It watches window changes only to know whether a keyboard is open, and reads window content
+ * only to find the focused field when inserting text.
  */
 class DictationAccessibilityService : AccessibilityService() {
 
@@ -30,19 +38,44 @@ class DictationAccessibilityService : AccessibilityService() {
         override fun onClicked(controller: AccessibilityButtonController) = toggleDictation()
     }
 
+    private var scope: CoroutineScope? = null
+    private var keyboardButton: KeyboardMicButton? = null
+
     override fun onServiceConnected() {
         super.onServiceConnected()
         accessibilityButtonController.registerAccessibilityButtonCallback(buttonCallback)
+        val settings = KeyboardButtonSettings.get(this)
+        val button = KeyboardMicButton(this, settings, onTap = ::toggleDictation)
+        keyboardButton = button
+        scope = MainScope().apply {
+            launch { DictationStatus.state.collect(button::onDictationStateChanged) }
+            launch { settings.isEnabled.collect(button::setEnabled) }
+        }
+        button.onKeyboardChanged(keyboardBounds())
         instance = this
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         instance = null
+        scope?.cancel()
+        scope = null
+        keyboardButton?.destroy()
+        keyboardButton = null
         accessibilityButtonController.unregisterAccessibilityButtonCallback(buttonCallback)
         return super.onUnbind(intent)
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) = Unit
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        if (event?.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
+            keyboardButton?.onKeyboardChanged(keyboardBounds())
+        }
+    }
+
+    /** Bounds of the on-screen keyboard, or null when none is shown. */
+    private fun keyboardBounds(): Rect? = windows
+        .firstOrNull { it.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD }
+        ?.let { window -> Rect().also(window::getBoundsInScreen) }
+        ?.takeUnless { it.isEmpty }
 
     override fun onInterrupt() = Unit
 

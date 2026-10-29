@@ -101,8 +101,12 @@
     </plurals>
 
     <string name="accessibility_label">Voicemator dictation</string>
-    <string name="accessibility_summary">Floating button to dictate, and text typed straight into the field you are editing.</string>
-    <string name="accessibility_description">Adds a floating accessibility button that starts and stops dictation, and pastes the transcription into the text field you are editing. To find that field, Voicemator looks at the screen only at the moment it inserts text. Speech is transcribed on this device; nothing is sent anywhere or stored outside the app.</string>
-    <string name="setup_accessibility_title">Floating button and typing into fields (optional)</string>
-    <string name="setup_accessibility_body">Turn on Voicemator in Accessibility settings and choose the floating accessibility button as its shortcut. Tap the button to dictate; the text goes straight into the field you are editing. Android will warn that the app can see the screen: Voicemator only uses this to find the focused field when inserting text.</string>
+    <string name="accessibility_summary">A mic button at the keyboard, a dictation shortcut, and text typed straight into the field you are editing.</string>
+    <string name="accessibility_description">Shows a small mic button at the keyboard while it is open, lets the accessibility shortcut (for example holding both volume keys) start and stop dictation, and pastes the transcription into the text field you are editing. Voicemator watches only whether a keyboard is open, and looks at the screen only at the moment it inserts text, to find that field. Speech is transcribed on this device; nothing is sent anywhere or stored outside the app.</string>
+    <string name="setup_accessibility_title">Mic button at the keyboard (optional)</string>
+    <string name="setup_accessibility_body">Turn on Voicemator dictation in Accessibility settings. A mic button then appears at the keyboard whenever you type: tap it, speak, tap again, and the text goes straight into the field. You can also pick a shortcut such as holding both volume keys. If Android says the setting is restricted, open App info for Voicemator, tap ⋮ and allow restricted settings, then try again.</string>
+
+    <string name="keyboard_button_description">Dictate with Voicemator</string>
+    <string name="keyboard_button_switch">Show the mic button at the keyboard</string>
+    <string name="keyboard_button_hint">Drag the button to move it; it remembers where you put it.</string>
 </resources>

@@ -103,8 +103,12 @@
     </plurals>
 
     <string name="accessibility_label">Dyktowanie Voicemator</string>
-    <string name="accessibility_summary">Pływający przycisk do dyktowania i tekst wpisywany od razu w edytowane pole.</string>
-    <string name="accessibility_description">Dodaje pływający przycisk ułatwień dostępu, który włącza i wyłącza dyktowanie, oraz wkleja przepisany tekst w pole, które edytujesz. Żeby znaleźć to pole, Voicemator sprawdza ekran tylko w chwili wstawiania tekstu. Mowa jest przetwarzana na tym urządzeniu; nic nie jest nigdzie wysyłane ani zapisywane poza aplikacją.</string>
-    <string name="setup_accessibility_title">Pływający przycisk i wpisywanie w pola (opcjonalnie)</string>
-    <string name="setup_accessibility_body">Włącz Voicemator w ustawieniach ułatwień dostępu i wybierz pływający przycisk ułatwień dostępu jako skrót. Dotknij przycisku, żeby dyktować; tekst trafi od razu w pole, które edytujesz. Android ostrzeże, że aplikacja widzi ekran: Voicemator używa tego tylko do znalezienia aktywnego pola przy wstawianiu tekstu.</string>
+    <string name="accessibility_summary">Przycisk mikrofonu przy klawiaturze, skrót do dyktowania i tekst wpisywany od razu w edytowane pole.</string>
+    <string name="accessibility_description">Pokazuje mały przycisk mikrofonu przy otwartej klawiaturze, pozwala włączać i wyłączać dyktowanie skrótem ułatwień dostępu (na przykład przytrzymaniem obu przycisków głośności) i wkleja przepisany tekst w pole, które edytujesz. Voicemator sprawdza tylko, czy klawiatura jest otwarta, a na ekran patrzy wyłącznie w chwili wstawiania tekstu, żeby znaleźć to pole. Mowa jest przetwarzana na tym urządzeniu; nic nie jest nigdzie wysyłane ani zapisywane poza aplikacją.</string>
+    <string name="setup_accessibility_title">Przycisk mikrofonu przy klawiaturze (opcjonalnie)</string>
+    <string name="setup_accessibility_body">Włącz Dyktowanie Voicemator w ustawieniach ułatwień dostępu. Przy klawiaturze pojawi się wtedy przycisk mikrofonu: dotknij go, mów, dotknij ponownie, a tekst trafi od razu w pole. Możesz też wybrać skrót, na przykład przytrzymanie obu przycisków głośności. Jeśli Android napisze, że ustawienie jest ograniczone, otwórz Informacje o aplikacji Voicemator, dotknij ⋮ i zezwól na ustawienia z ograniczonym dostępem, a potem spróbuj ponownie.</string>
+
+    <string name="keyboard_button_description">Dyktuj z Voicemator</string>
+    <string name="keyboard_button_switch">Pokazuj przycisk mikrofonu przy klawiaturze</string>
+    <string name="keyboard_button_hint">Przeciągnij przycisk, żeby go przesunąć; zapamięta nowe miejsce.</string>
 </resources>

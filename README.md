@@ -3,9 +3,9 @@
 On-device dictation for Android, one tap away in Quick Settings.
 
 Pull down the notification shade, tap **Dictate**, speak, tap it again. The transcription is
-copied to your clipboard, ready to paste into any app. Or turn on the optional floating button:
-tap it while typing anywhere, speak, tap again, and the text appears right in the field. Speech
-never leaves your phone.
+copied to your clipboard, ready to paste into any app. Or turn on the optional accessibility
+service: a small mic button then appears at the keyboard whenever you type; tap it, speak, tap
+again, and the text appears right in the field. Speech never leaves your phone.
 
 Voicemator is inspired by [VoiceInk](https://github.com/Beingpax/VoiceInk) for macOS. It uses
 [Parakeet Ultra](https://huggingface.co/moondream/parakeet-ultra) by Moondream,
@@ -18,8 +18,9 @@ Hugging Face user leogaudin.
 ## Features
 
 - Quick Settings tile that starts and stops dictation from anywhere
-- Optional floating accessibility button that toggles dictation and types the text straight
-  into the field you are editing
+- Optional mic button at the keyboard, shown only while a keyboard is open, that types the text
+  straight into the field you are editing; drag it wherever suits your keyboard
+- The accessibility shortcut (for example holding both volume keys) toggles dictation too
 - Fully offline transcription after a one-time model download (~670 MB)
 - Long dictations are transcribed in the background while you speak, so the text is ready right
   after you stop
@@ -95,18 +96,20 @@ then run:
 
 1. Open Voicemator and grant microphone and notification access. Optionally allow it to display
    over other apps to get the recording indicator.
-2. Optionally turn on **Voicemator dictation** under Settings → Accessibility and pick the
-   floating accessibility button as its shortcut, to dictate straight into text fields.
+2. Optionally turn on **Voicemator dictation** under Settings → Accessibility to get the mic
+   button at the keyboard. If Android says the setting is restricted (it does for apps installed
+   from an APK), open App info for Voicemator, tap ⋮ and allow restricted settings first.
 3. Download the speech model.
 4. Add the **Dictate** tile to Quick Settings.
-5. Tap the tile or the floating button, speak, and tap it again. With the accessibility service
+5. Tap the tile or the keyboard mic button, speak, and tap it again. With the accessibility service
    on, the text is typed into the focused field; otherwise paste it from the clipboard.
 
 ## How it works
 
 | Component | Role |
 |---|---|
-| `DictationAccessibilityService` | Optional: the floating button, and pasting results into the focused field |
+| `DictationAccessibilityService` | Optional: the keyboard mic button, the accessibility shortcut, and pasting results into the focused field |
+| `KeyboardMicButton` | The mic button shown at the keyboard while it is open |
 | `DictationTileService` | Quick Settings tile that reflects and toggles the dictation state |
 | `DictationTriggerActivity` | Invisible activity that starts recording; Android only allows microphone access from services started while the app is in the foreground |
 | `DictationService` | Foreground service that records, transcribes and copies the result |
@@ -136,10 +139,10 @@ other download.
 
 ### Accessibility service
 
-The accessibility service is optional and off until you enable it. It does two things: it
-receives clicks on the system accessibility button, and when a dictation finishes it looks up the
-focused text field and pastes the transcription into it. It does not observe what you do; it reads
-the screen only at that moment, skips password fields, and has no other way to send data
+The accessibility service is optional and off until you enable it. It watches window changes only
+to know whether a keyboard is open, so it can show the mic button; it receives the accessibility
+shortcut; and when a dictation finishes it looks up the focused text field and pastes the
+transcription into it. It reads screen content only at that moment, skips password fields, and has no other way to send data
 anywhere, as the app's only network use is downloading the model.
 
 ## License
