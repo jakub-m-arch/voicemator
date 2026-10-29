@@ -17,7 +17,6 @@
     <string name="action_stop">Stop</string>
     <string name="action_cancel">Cancel</string>
 
-    <string name="setup_intro">Dictate anywhere: tap the tile in Quick Settings, speak, tap it again, and the text lands in your clipboard. Speech is transcribed on this device.</string>
     <string name="setup_microphone_title">Microphone</string>
     <string name="setup_microphone_body">Needed to hear what you say.</string>
     <string name="setup_notifications_title">Notifications</string>
@@ -27,22 +26,16 @@
     <string name="setup_model_downloading">Downloading… %1$d%%</string>
     <string name="setup_model_failed">Download failed. Check your connection and try again.</string>
     <string name="setup_tile_title">Quick Settings tile</string>
-    <string name="setup_tile_body">Add the Dictate tile so dictation is one swipe away.</string>
-    <string name="setup_overlay_title">Recording indicator (optional)</string>
+    <string name="setup_overlay_title">Recording pill</string>
     <string name="setup_overlay_body">Shows a pill around the camera while you dictate, with a live waveform. Tap it to stop. Needs permission to display over other apps.</string>
-    <string name="setup_try_title">Try it</string>
-    <string name="setup_try_body">Speak after tapping Start. The result is copied to your clipboard.</string>
 
     <string name="button_grant">Allow</string>
     <string name="button_download">Download</string>
     <string name="button_retry">Retry</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_open_settings">Open settings</string>
-    <string name="button_add_tile">Add tile</string>
-    <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
     <string name="status_done">Done</string>
-    <string name="status_transcribing">Transcribing…</string>
 
     <string name="licenses_title">Open source licences</string>
     <string name="licenses_app_section">This app</string>
@@ -64,7 +57,6 @@
     <string name="history_copy">Copy</string>
     <string name="history_delete">Delete</string>
     <string name="history_settings_title">History</string>
-    <string name="history_settings_body">Choose what is kept on this device after each dictation. Nothing is sent anywhere.</string>
     <string name="history_clear">Clear history and statistics</string>
     <string name="history_clear_confirm_title">Clear history?</string>
     <string name="history_clear_confirm_body">All saved dictations and the statistics based on them will be deleted. This cannot be undone.</string>
@@ -102,11 +94,10 @@
     <string name="accessibility_label">Voicemator dictation</string>
     <string name="accessibility_summary">A mic button at the keyboard, a dictation shortcut, and text typed straight into the field you are editing.</string>
     <string name="accessibility_description">Shows a small mic button at the keyboard while it is open, lets the accessibility shortcut (for example holding both volume keys) start and stop dictation, and pastes the transcription into the text field you are editing. Voicemator watches only whether a keyboard is open, and looks at the screen only at the moment it inserts text, to find that field. Speech is transcribed on this device; nothing is sent anywhere or stored outside the app.</string>
-    <string name="setup_accessibility_title">Mic button at the keyboard (optional)</string>
+    <string name="setup_accessibility_title">Mic button at the keyboard</string>
     <string name="setup_accessibility_body">Turn on Voicemator dictation in Accessibility settings. A mic button then appears at the keyboard whenever you type: tap it, speak, tap again, and the text goes straight into the field. You can also pick a shortcut such as holding both volume keys. If Android says the setting is restricted, open App info for Voicemator, tap ⋮ and allow restricted settings, then try again.</string>
 
     <string name="keyboard_button_description">Dictate with Voicemator</string>
-    <string name="keyboard_button_switch">Show the mic button at the keyboard</string>
     <string name="keyboard_button_hint">Drag the button to move it; it remembers where you put it.</string>
 
     <string name="voice_input_label">Voicemator voice input</string>
@@ -116,7 +107,7 @@
     <string name="voice_input_stop">Stop and insert</string>
     <string name="voice_input_cancel">Cancel</string>
     <string name="voice_input_setup_needed">Finish setting up Voicemator first. Tap here to open it.</string>
-    <string name="setup_voice_input_title">Voice input for your keyboard (optional)</string>
+    <string name="setup_voice_input_title">Voice input for keyboards</string>
     <string name="setup_voice_input_body">Lets keyboards with a voice key use Voicemator. Turn on Voicemator voice input in the keyboard settings. In FUTO Keyboard, also open Settings → Voice input and turn on “Disable built-in voice input”. Then tap the keyboard\'s mic key: dictation starts, and stopping types the text and returns to your keyboard.</string>
 
     <string name="history_mode_full">Full history</string>
@@ -134,11 +125,7 @@
     <string name="history_remove_texts_confirm_body">The text of every saved dictation will be deleted. Statistics stay. This cannot be undone.</string>
 
     <string name="transcription_settings_title">Transcription</string>
-    <string name="transcription_final_pass">Transcribe the whole recording again at the end</string>
-    <string name="transcription_final_pass_body">After you stop, the whole recording is transcribed once more as one piece, so punctuation and sentences run naturally across it; the live preview stays as it is. Longer dictations take a few more seconds to finish. Recordings over %1$d minutes always use the faster method.</string>
 
-    <string name="transcription_remove_fillers">Remove fillers such as “yyy”, “eee” and “um”</string>
-    <string name="dictionary_open">Dictionary</string>
     <string name="dictionary_title">Dictionary</string>
     <string name="dictionary_intro">Teach Voicemator names and words it gets wrong. Whenever it hears the first form as a whole word or phrase, it writes the second. Case does not matter.</string>
     <string name="dictionary_heard">When it writes</string>
@@ -148,7 +135,6 @@
 
     <string name="transcribe_file_share_label">Transcribe with Voicemator</string>
     <string name="transcribe_file_title">Transcribe recording</string>
-    <string name="transcribe_file_pick">Transcribe an audio file…</string>
     <string name="transcribe_file_starting">Preparing…</string>
     <string name="transcribe_file_decoding">Reading the recording…</string>
     <string name="transcribe_file_transcribing">Transcribing… %1$d%%</string>
@@ -159,4 +145,33 @@
     <string name="transcribe_file_no_file">No recording was shared.</string>
     <string name="transcribe_file_unsupported">This file could not be read. It may not contain audio in a format this phone can decode.</string>
     <string name="transcribe_file_too_long">The recording is too long. Files up to %1$d minutes are supported.</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="getting_started_title">Get started</string>
+    <string name="getting_started_body">Three steps before your first dictation.</string>
+    <string name="section_ways">Ways to dictate</string>
+    <string name="section_history">History and privacy</string>
+    <string name="section_about">About</string>
+    <string name="summary_on">On</string>
+    <string name="summary_off">Off</string>
+    <string name="summary_tile_added">Added</string>
+    <string name="summary_tile_add">Tap to add it</string>
+    <string name="summary_voice_input_on">On · for FUTO Keyboard and others</string>
+    <string name="summary_needs_accessibility">Needs accessibility access</string>
+    <string name="summary_needs_overlay">Needs permission to display over other apps</string>
+    <string name="row_fillers_title">Remove fillers</string>
+    <string name="row_fillers_summary">yyy, eee, um, uh</string>
+    <string name="row_final_pass_title">Transcribe everything at the end</string>
+    <string name="row_final_pass_summary">More natural punctuation, a few seconds\' wait · recordings up to %1$d min</string>
+    <string name="row_dictionary_empty">Names and words it gets wrong</string>
+    <plurals name="row_dictionary_entries">
+        <item quantity="one">%1$d entry</item>
+        <item quantity="other">%1$d entries</item>
+    </plurals>
+    <string name="row_transcribe_file_title">Transcribe an audio file</string>
+    <string name="row_transcribe_file_summary">Voice messages and recordings</string>
+    <string name="row_remove_texts_summary">Statistics stay</string>
+    <string name="row_version_title">Voicemator %1$s</string>
+    <string name="row_version_summary">Source code on GitHub</string>
+    <string name="button_dictate">Dictate</string>
 </resources>

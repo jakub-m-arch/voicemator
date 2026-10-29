@@ -15,7 +15,6 @@
     <string name="action_stop">Zatrzymaj</string>
     <string name="action_cancel">Anuluj</string>
 
-    <string name="setup_intro">Dyktuj gdziekolwiek: dotknij kafelka w szybkich ustawieniach, mów, dotknij go ponownie, a tekst trafi do schowka. Mowa jest przetwarzana na tym urządzeniu.</string>
     <string name="setup_microphone_title">Mikrofon</string>
     <string name="setup_microphone_body">Potrzebny, żeby usłyszeć, co mówisz.</string>
     <string name="setup_notifications_title">Powiadomienia</string>
@@ -25,22 +24,16 @@
     <string name="setup_model_downloading">Pobieranie… %1$d%%</string>
     <string name="setup_model_failed">Pobieranie nie powiodło się. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="setup_tile_title">Kafelek w szybkich ustawieniach</string>
-    <string name="setup_tile_body">Dodaj kafelek Dyktuj, żeby dyktowanie było zawsze pod ręką.</string>
-    <string name="setup_overlay_title">Wskaźnik nagrywania (opcjonalnie)</string>
+    <string name="setup_overlay_title">Pigułka nagrywania</string>
     <string name="setup_overlay_body">Podczas dyktowania wokół aparatu pojawia się pigułka z falą dźwięku na żywo. Dotknij jej, żeby zakończyć. Wymaga zgody na wyświetlanie nad innymi aplikacjami.</string>
-    <string name="setup_try_title">Wypróbuj</string>
-    <string name="setup_try_body">Mów po dotknięciu Start. Wynik zostanie skopiowany do schowka.</string>
 
     <string name="button_grant">Zezwól</string>
     <string name="button_download">Pobierz</string>
     <string name="button_retry">Ponów</string>
     <string name="button_cancel">Anuluj</string>
     <string name="button_open_settings">Otwórz ustawienia</string>
-    <string name="button_add_tile">Dodaj kafelek</string>
-    <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
     <string name="status_done">Gotowe</string>
-    <string name="status_transcribing">Przepisuję…</string>
 
     <string name="licenses_title">Licencje open source</string>
     <string name="licenses_app_section">Ta aplikacja</string>
@@ -60,7 +53,6 @@
     <string name="history_copy">Kopiuj</string>
     <string name="history_delete">Usuń</string>
     <string name="history_settings_title">Historia</string>
-    <string name="history_settings_body">Wybierz, co zostaje na tym urządzeniu po każdym dyktowaniu. Nic nie jest nigdzie wysyłane.</string>
     <string name="history_clear">Wyczyść historię i statystyki</string>
     <string name="history_clear_confirm_title">Wyczyścić historię?</string>
     <string name="history_clear_confirm_body">Wszystkie zapisane dyktowania i oparte na nich statystyki zostaną usunięte. Tego nie da się cofnąć.</string>
@@ -104,11 +96,10 @@
     <string name="accessibility_label">Dyktowanie Voicemator</string>
     <string name="accessibility_summary">Przycisk mikrofonu przy klawiaturze, skrót do dyktowania i tekst wpisywany od razu w edytowane pole.</string>
     <string name="accessibility_description">Pokazuje mały przycisk mikrofonu przy otwartej klawiaturze, pozwala włączać i wyłączać dyktowanie skrótem ułatwień dostępu (na przykład przytrzymaniem obu przycisków głośności) i wkleja przepisany tekst w pole, które edytujesz. Voicemator sprawdza tylko, czy klawiatura jest otwarta, a na ekran patrzy wyłącznie w chwili wstawiania tekstu, żeby znaleźć to pole. Mowa jest przetwarzana na tym urządzeniu; nic nie jest nigdzie wysyłane ani zapisywane poza aplikacją.</string>
-    <string name="setup_accessibility_title">Przycisk mikrofonu przy klawiaturze (opcjonalnie)</string>
+    <string name="setup_accessibility_title">Przycisk przy klawiaturze</string>
     <string name="setup_accessibility_body">Włącz Dyktowanie Voicemator w ustawieniach ułatwień dostępu. Przy klawiaturze pojawi się wtedy przycisk mikrofonu: dotknij go, mów, dotknij ponownie, a tekst trafi od razu w pole. Możesz też wybrać skrót, na przykład przytrzymanie obu przycisków głośności. Jeśli Android napisze, że ustawienie jest ograniczone, otwórz Informacje o aplikacji Voicemator, dotknij ⋮ i zezwól na ustawienia z ograniczonym dostępem, a potem spróbuj ponownie.</string>
 
     <string name="keyboard_button_description">Dyktuj z Voicemator</string>
-    <string name="keyboard_button_switch">Pokazuj przycisk mikrofonu przy klawiaturze</string>
     <string name="keyboard_button_hint">Przeciągnij przycisk, żeby go przesunąć; zapamięta nowe miejsce.</string>
 
     <string name="voice_input_label">Wprowadzanie głosowe Voicemator</string>
@@ -118,7 +109,7 @@
     <string name="voice_input_stop">Zatrzymaj i wstaw</string>
     <string name="voice_input_cancel">Anuluj</string>
     <string name="voice_input_setup_needed">Najpierw dokończ konfigurację Voicematora. Dotknij tutaj, żeby go otworzyć.</string>
-    <string name="setup_voice_input_title">Wprowadzanie głosowe dla klawiatury (opcjonalnie)</string>
+    <string name="setup_voice_input_title">Wprowadzanie głosowe</string>
     <string name="setup_voice_input_body">Pozwala klawiaturom z klawiszem mikrofonu używać Voicematora. Włącz Wprowadzanie głosowe Voicemator w ustawieniach klawiatur. W klawiaturze FUTO otwórz też Ustawienia → Voice input i włącz „Disable built-in voice input”. Potem dotknij mikrofonu na klawiaturze: dyktowanie startuje od razu, a zatrzymanie wpisuje tekst i wraca do klawiatury.</string>
 
     <string name="history_mode_full">Pełna historia</string>
@@ -136,11 +127,7 @@
     <string name="history_remove_texts_confirm_body">Treść wszystkich zapisanych dyktowań zostanie usunięta. Statystyki zostaną. Tego nie da się cofnąć.</string>
 
     <string name="transcription_settings_title">Przepisywanie</string>
-    <string name="transcription_final_pass">Na końcu przepisz całe nagranie jeszcze raz</string>
-    <string name="transcription_final_pass_body">Po zatrzymaniu całe nagranie jest przepisywane jeszcze raz w jednym kawałku, więc interpunkcja i zdania układają się naturalnie w całym tekście; podgląd na żywo działa jak dotąd. Dłuższe dyktowania kończą się wtedy kilka sekund później. Nagrania dłuższe niż %1$d minuty zawsze używają szybszego sposobu.</string>
 
-    <string name="transcription_remove_fillers">Usuwaj wypełniacze, takie jak „yyy”, „eee” i „um”</string>
-    <string name="dictionary_open">Słownik</string>
     <string name="dictionary_title">Słownik</string>
     <string name="dictionary_intro">Naucz Voicematora imion i słów, które przekręca. Gdy rozpozna pierwszą formę jako całe słowo lub frazę, wpisze drugą. Wielkość liter nie ma znaczenia.</string>
     <string name="dictionary_heard">Gdy napisze</string>
@@ -150,7 +137,6 @@
 
     <string name="transcribe_file_share_label">Przepisz w Voicematorze</string>
     <string name="transcribe_file_title">Przepisz nagranie</string>
-    <string name="transcribe_file_pick">Przepisz plik audio…</string>
     <string name="transcribe_file_starting">Przygotowuję…</string>
     <string name="transcribe_file_decoding">Odczytuję nagranie…</string>
     <string name="transcribe_file_transcribing">Przepisuję… %1$d%%</string>
@@ -161,4 +147,35 @@
     <string name="transcribe_file_no_file">Nie udostępniono żadnego nagrania.</string>
     <string name="transcribe_file_unsupported">Nie udało się odczytać tego pliku. Może nie zawierać dźwięku w formacie obsługiwanym przez ten telefon.</string>
     <string name="transcribe_file_too_long">Nagranie jest za długie. Obsługiwane są pliki do %1$d minut.</string>
+
+    <string name="settings_title">Ustawienia</string>
+    <string name="getting_started_title">Pierwsze kroki</string>
+    <string name="getting_started_body">Trzy kroki przed pierwszym dyktowaniem.</string>
+    <string name="section_ways">Sposoby dyktowania</string>
+    <string name="section_history">Historia i prywatność</string>
+    <string name="section_about">O aplikacji</string>
+    <string name="summary_on">Włączone</string>
+    <string name="summary_off">Wyłączone</string>
+    <string name="summary_tile_added">Dodany</string>
+    <string name="summary_tile_add">Dotknij, aby dodać</string>
+    <string name="summary_voice_input_on">Włączone · dla klawiatury FUTO i innych</string>
+    <string name="summary_needs_accessibility">Wymaga ułatwień dostępu</string>
+    <string name="summary_needs_overlay">Wymaga zgody na wyświetlanie nad innymi aplikacjami</string>
+    <string name="row_fillers_title">Usuwaj wypełniacze</string>
+    <string name="row_fillers_summary">yyy, eee, um, uh</string>
+    <string name="row_final_pass_title">Przepisz całość na końcu</string>
+    <string name="row_final_pass_summary">Naturalniejsza interpunkcja, kilka sekund czekania · nagrania do %1$d min</string>
+    <string name="row_dictionary_empty">Imiona i słowa, które przekręca</string>
+    <plurals name="row_dictionary_entries">
+        <item quantity="one">%1$d wpis</item>
+        <item quantity="few">%1$d wpisy</item>
+        <item quantity="many">%1$d wpisów</item>
+        <item quantity="other">%1$d wpisu</item>
+    </plurals>
+    <string name="row_transcribe_file_title">Przepisz plik audio</string>
+    <string name="row_transcribe_file_summary">Głosówki i nagrania</string>
+    <string name="row_remove_texts_summary">Statystyki zostaną</string>
+    <string name="row_version_title">Voicemator %1$s</string>
+    <string name="row_version_summary">Kod źródłowy na GitHubie</string>
+    <string name="button_dictate">Dyktuj</string>
 </resources>

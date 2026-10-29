@@ -1,4 +1,4 @@
-package io.github.jakub_m_arch.voicemator.ui
+package io.github.jakub_m_arch.voicemator.ui.settings
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SetupViewModel(application: Application) : AndroidViewModel(application) {
+class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val downloader = ModelDownloader(application)
     private val mutableModelState = MutableStateFlow<ModelState>(ModelState.NotInstalled)
