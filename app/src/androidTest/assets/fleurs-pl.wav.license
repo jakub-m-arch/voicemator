@@ -1,0 +1,10 @@
+SPDX-FileCopyrightText: Google LLC
+SPDX-License-Identifier: CC-BY-4.0
+
+Source: FLEURS dataset (https://huggingface.co/datasets/google/fleurs), Polish
+(pl_pl) dev split, file 5888006887312168497.wav, licensed under CC BY 4.0
+(https://creativecommons.org/licenses/by/4.0/).
+
+Transcription: "Gdy dzwonisz do osoby, która jest tysiące mil od ciebie, używasz satelity."
+
+Changes: converted from 32-bit float to 16-bit integer PCM. No other changes.

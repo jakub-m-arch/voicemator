@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_label">Dyktuj</string>
+    <string name="tile_subtitle_recording">Słucham…</string>
+    <string name="tile_subtitle_transcribing">Przepisuję…</string>
+
+    <string name="channel_dictation">Dyktowanie</string>
+    <string name="channel_results">Transkrypcje</string>
+    <string name="notification_recording">Słucham…</string>
+    <string name="notification_transcribing">Przepisuję…</string>
+    <string name="notification_copied">Skopiowano do schowka</string>
+    <string name="notification_nothing_heard">Nie wykryto mowy</string>
+    <string name="notification_failed">Dyktowanie nie powiodło się</string>
+    <string name="action_stop">Zatrzymaj</string>
+    <string name="action_cancel">Anuluj</string>
+
+    <string name="setup_intro">Dyktuj gdziekolwiek: dotknij kafelka w szybkich ustawieniach, mów, dotknij go ponownie, a tekst trafi do schowka. Mowa jest przetwarzana na tym urządzeniu.</string>
+    <string name="setup_microphone_title">Mikrofon</string>
+    <string name="setup_microphone_body">Potrzebny, żeby usłyszeć, co mówisz.</string>
+    <string name="setup_notifications_title">Powiadomienia</string>
+    <string name="setup_notifications_body">Pokazują, że trwa dyktowanie i co zostało skopiowane.</string>
+    <string name="setup_model_title">Model mowy</string>
+    <string name="setup_model_body">Parakeet Ultra, około %1$d MB. Pobierany raz, potem działa offline.</string>
+    <string name="setup_model_downloading">Pobieranie… %1$d%%</string>
+    <string name="setup_model_failed">Pobieranie nie powiodło się. Sprawdź połączenie i spróbuj ponownie.</string>
+    <string name="setup_tile_title">Kafelek w szybkich ustawieniach</string>
+    <string name="setup_tile_body">Dodaj kafelek Dyktuj, żeby dyktowanie było zawsze pod ręką.</string>
+    <string name="setup_try_title">Wypróbuj</string>
+    <string name="setup_try_body">Mów po dotknięciu Start. Wynik zostanie skopiowany do schowka.</string>
+
+    <string name="button_grant">Zezwól</string>
+    <string name="button_download">Pobierz</string>
+    <string name="button_retry">Ponów</string>
+    <string name="button_cancel">Anuluj</string>
+    <string name="button_add_tile">Dodaj kafelek</string>
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
+    <string name="status_done">Gotowe</string>
+    <string name="status_transcribing">Przepisuję…</string>
+
+    <string name="licenses_title">Licencje open source</string>
+    <string name="licenses_app_section">Ta aplikacja</string>
+    <string name="licenses_bundled_section">Dołączone do aplikacji</string>
+    <string name="licenses_downloaded_section">Model mowy, pobierany na żądanie</string>
+    <string name="button_back">Wstecz</string>
+</resources>

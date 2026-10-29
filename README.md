@@ -1,0 +1,116 @@
+# Voicemator
+
+On-device dictation for Android, one tap away in Quick Settings.
+
+Pull down the notification shade, tap **Dictate**, speak, tap it again. The transcription is
+copied to your clipboard, ready to paste into any app. Speech never leaves your phone.
+
+Voicemator is inspired by [VoiceInk](https://github.com/Beingpax/VoiceInk) for macOS. It uses
+[Parakeet Ultra](https://huggingface.co/moondream/parakeet-ultra) by Moondream,
+a post-trained version of NVIDIA's
+[Parakeet TDT 0.6B v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3) covering 25 European
+languages. It runs locally through [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx), using the
+[int8 ONNX conversion](https://huggingface.co/leogaudin/sherpa-onnx-nemo-parakeet-ultra-int8) by
+Hugging Face user leogaudin.
+
+## Features
+
+- Quick Settings tile that starts and stops dictation from anywhere
+- Fully offline transcription after a one-time model download (~670 MB)
+- Result copied to the clipboard, with a notification showing the text
+- Stop or cancel from the ongoing notification
+
+## Requirements
+
+- Android 14 or newer, 64-bit ARM
+- About 1 GB of free storage and a recent phone; the model needs roughly 1 GB of RAM while
+  transcribing
+
+## Building
+
+You need JDK 17 and the Android SDK (platform 36). Point Gradle at the SDK with
+`local.properties` or the `ANDROID_HOME` environment variable, then:
+
+```bash
+./gradlew assembleDebug
+```
+
+The first build downloads the sherpa-onnx Android library from its GitHub release and checks it
+against a pinned SHA-256 checksum. To install on a connected phone:
+
+```bash
+./gradlew installDebug
+```
+
+## Releases
+
+Signed APKs are built by GitHub Actions. Every push and pull request runs
+[`ci.yml`](.github/workflows/ci.yml), which checks licences, runs lint and uploads a debug APK.
+Pushing a tag such as `v0.1.0` runs [`release.yml`](.github/workflows/release.yml), which builds a
+signed release APK and publishes it with its SHA-256 checksum on the GitHub Releases page. The tag
+must match `versionName` in `app/build.gradle.kts`.
+
+Release signing needs four repository secrets:
+
+| Secret | Value |
+|---|---|
+| `VOICEMATOR_KEYSTORE_BASE64` | The release keystore, base64-encoded |
+| `VOICEMATOR_KEYSTORE_PASSWORD` | Keystore password |
+| `VOICEMATOR_KEY_ALIAS` | Key alias |
+| `VOICEMATOR_KEY_PASSWORD` | Key password |
+
+Locally, set the same names (with `VOICEMATOR_KEYSTORE_FILE` pointing to the keystore instead of
+the base64 value) to build a signed release with `./gradlew assembleRelease`.
+
+## Testing
+
+`SpeechTranscriberTest` transcribes a short Polish recording from the
+[FLEURS](https://huggingface.co/datasets/google/fleurs) dataset on a device or emulator. It is
+skipped unless the model is installed, so download it in the app first, then run:
+
+```bash
+./gradlew connectedDebugAndroidTest
+```
+
+## Usage
+
+1. Open Voicemator and grant microphone and notification access.
+2. Download the speech model.
+3. Add the **Dictate** tile to Quick Settings.
+4. Tap the tile, speak, and tap it again. Paste the text wherever you need it.
+
+## How it works
+
+| Component | Role |
+|---|---|
+| `DictationTileService` | Quick Settings tile that reflects and toggles the dictation state |
+| `DictationTriggerActivity` | Invisible activity that starts recording; Android only allows microphone access from services started while the app is in the foreground |
+| `DictationService` | Foreground service that records, transcribes and copies the result |
+| `AudioRecorder` | Captures 16 kHz mono audio into memory |
+| `SpeechTranscriber` | Wraps the sherpa-onnx offline recognizer |
+| `ModelDownloader` | Fetches the model through the system `DownloadManager` |
+
+The model loads while you speak, which hides most of its startup time. It is released when
+dictation finishes to keep memory free.
+
+## Privacy
+
+Voicemator has no analytics, accounts or servers. Audio is recorded into memory, transcribed on
+the device and discarded; only the text is placed on the clipboard. The app connects to the
+internet once, to download the speech model from Hugging Face, which sees the request like any
+other download.
+
+## License
+
+Voicemator is licensed under the [Apache License 2.0](LICENSE); see also [NOTICE](NOTICE).
+
+The app includes third-party software under Apache-2.0, MIT, BSD and MPL-2.0 licences. Every
+component, its copyright holders and its full licence text are listed in the app under
+**Open source licences** and in
+[`ThirdPartyNotices.kt`](app/src/main/java/io/github/jakub_m_arch/voicemator/licenses/ThirdPartyNotices.kt).
+The `checkThirdPartyNotices` Gradle task fails the build when a dependency is not credited there.
+
+The speech model is not distributed with the app. Parakeet TDT 0.6B v3 (NVIDIA), Parakeet Ultra
+(Moondream) and the ONNX conversion are licensed under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). NVIDIA and Moondream have not reviewed
+or endorsed Voicemator; product names belong to their owners.

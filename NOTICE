@@ -1,0 +1,17 @@
+Voicemator
+Copyright 2026 The Voicemator Authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The Android app includes third-party software. Their copyright notices and
+licences are listed in the app under "Open source licences", in
+app/src/main/java/io/github/jakub_m_arch/voicemator/licenses/ThirdPartyNotices.kt,
+and in full in app/src/main/assets/licenses/.
+
+The speech model is not part of this repository or the app. The app downloads
+it on request; it is licensed under CC BY 4.0 by its authors (NVIDIA, Moondream
+and the author of the ONNX conversion).
+
+The test recording app/src/androidTest/assets/fleurs-pl.wav comes from the
+FLEURS dataset by Google LLC, licensed under CC BY 4.0; see the accompanying
+.license file for its source and the changes made.
