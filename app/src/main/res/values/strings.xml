@@ -109,4 +109,14 @@
     <string name="keyboard_button_description">Dictate with Voicemator</string>
     <string name="keyboard_button_switch">Show the mic button at the keyboard</string>
     <string name="keyboard_button_hint">Drag the button to move it; it remembers where you put it.</string>
+
+    <string name="voice_input_label">Voicemator voice input</string>
+    <string name="voice_input_starting">Starting…</string>
+    <string name="voice_input_listening">Listening… %1$d:%2$02d</string>
+    <string name="voice_input_transcribing">Transcribing…</string>
+    <string name="voice_input_stop">Stop and insert</string>
+    <string name="voice_input_cancel">Cancel</string>
+    <string name="voice_input_setup_needed">Finish setting up Voicemator first. Tap here to open it.</string>
+    <string name="setup_voice_input_title">Voice input for your keyboard (optional)</string>
+    <string name="setup_voice_input_body">Lets keyboards with a voice key use Voicemator. Turn on Voicemator voice input in the keyboard settings. In FUTO Keyboard, also open Settings → Voice input and turn on “Disable built-in voice input”. Then tap the keyboard\'s mic key: dictation starts, and stopping types the text and returns to your keyboard.</string>
 </resources>

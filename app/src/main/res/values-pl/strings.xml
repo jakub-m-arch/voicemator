@@ -111,4 +111,14 @@
     <string name="keyboard_button_description">Dyktuj z Voicemator</string>
     <string name="keyboard_button_switch">Pokazuj przycisk mikrofonu przy klawiaturze</string>
     <string name="keyboard_button_hint">Przeciągnij przycisk, żeby go przesunąć; zapamięta nowe miejsce.</string>
+
+    <string name="voice_input_label">Wprowadzanie głosowe Voicemator</string>
+    <string name="voice_input_starting">Uruchamiam…</string>
+    <string name="voice_input_listening">Słucham… %1$d:%2$02d</string>
+    <string name="voice_input_transcribing">Przepisuję…</string>
+    <string name="voice_input_stop">Zatrzymaj i wstaw</string>
+    <string name="voice_input_cancel">Anuluj</string>
+    <string name="voice_input_setup_needed">Najpierw dokończ konfigurację Voicematora. Dotknij tutaj, żeby go otworzyć.</string>
+    <string name="setup_voice_input_title">Wprowadzanie głosowe dla klawiatury (opcjonalnie)</string>
+    <string name="setup_voice_input_body">Pozwala klawiaturom z klawiszem mikrofonu używać Voicematora. Włącz Wprowadzanie głosowe Voicemator w ustawieniach klawiatur. W klawiaturze FUTO otwórz też Ustawienia → Voice input i włącz „Disable built-in voice input”. Potem dotknij mikrofonu na klawiaturze: dyktowanie startuje od razu, a zatrzymanie wpisuje tekst i wraca do klawiatury.</string>
 </resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A voice-only input method. The auxiliary voice subtype keeps it out of the normal keyboard
+    rotation; keyboards with a voice key switch to it on demand.
+-->
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:isDefault="false"
+    android:settingsActivity="io.github.jakub_m_arch.voicemator.MainActivity"
+    android:supportsSwitchingToNextInputMethod="true">
+    <subtype
+        android:imeSubtypeLocale=""
+        android:imeSubtypeMode="voice"
+        android:isAuxiliary="true"
+        android:label="@string/voice_input_label"
+        android:overridesImplicitlyEnabledSubtype="true" />
+</input-method>

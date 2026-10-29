@@ -5,7 +5,9 @@ On-device dictation for Android, one tap away in Quick Settings.
 Pull down the notification shade, tap **Dictate**, speak, tap it again. The transcription is
 copied to your clipboard, ready to paste into any app. Or turn on the optional accessibility
 service: a small mic button then appears at the keyboard whenever you type; tap it, speak, tap
-again, and the text appears right in the field. Speech never leaves your phone.
+again, and the text appears right in the field. With FUTO Keyboard or another keyboard that hands
+its mic key to the system's voice input, Voicemator can be that voice input. Speech never leaves
+your phone.
 
 Voicemator is inspired by [VoiceInk](https://github.com/Beingpax/VoiceInk) for macOS. It uses
 [Parakeet Ultra](https://huggingface.co/moondream/parakeet-ultra) by Moondream,
@@ -21,6 +23,8 @@ Hugging Face user leogaudin.
 - Optional mic button at the keyboard, shown only while a keyboard is open, that types the text
   straight into the field you are editing; drag it wherever suits your keyboard
 - The accessibility shortcut (for example holding both volume keys) toggles dictation too
+- Voice input method for keyboards with a voice key, such as FUTO Keyboard: the mic key opens
+  Voicemator, and stopping types the text and returns to the keyboard
 - Fully offline transcription after a one-time model download (~670 MB)
 - Long dictations are transcribed in the background while you speak, so the text is ready right
   after you stop
@@ -99,10 +103,14 @@ then run:
 2. Optionally turn on **Voicemator dictation** under Settings → Accessibility to get the mic
    button at the keyboard. If Android says the setting is restricted (it does for apps installed
    from an APK), open App info for Voicemator, tap ⋮ and allow restricted settings first.
-3. Download the speech model.
-4. Add the **Dictate** tile to Quick Settings.
-5. Tap the tile or the keyboard mic button, speak, and tap it again. With the accessibility service
-   on, the text is typed into the focused field; otherwise paste it from the clipboard.
+3. Optionally turn on **Voicemator voice input** under Settings → System → Keyboard. In FUTO
+   Keyboard, also turn on "Disable built-in voice input" in its voice input settings, so its mic
+   key opens Voicemator.
+4. Download the speech model.
+5. Add the **Dictate** tile to Quick Settings.
+6. Tap the tile, the keyboard mic button or your keyboard's mic key, speak, and stop. Through
+   the voice input method or the accessibility service the text is typed into the field;
+   otherwise paste it from the clipboard.
 
 ## How it works
 
@@ -112,7 +120,9 @@ then run:
 | `KeyboardMicButton` | The mic button shown at the keyboard while it is open |
 | `DictationTileService` | Quick Settings tile that reflects and toggles the dictation state |
 | `DictationTriggerActivity` | Invisible activity that starts recording; Android only allows microphone access from services started while the app is in the foreground |
-| `DictationService` | Foreground service that records, transcribes and copies the result |
+| `DictationSession` | One dictation: records, transcribes while recording, saves to the history |
+| `DictationService` | Foreground service that runs a session in the background and copies the result |
+| `VoiceInputMethodService` | Voice input method: runs a session itself and types the result into the field |
 | `RecordingOverlay` | Draws the recording pill (`RecordingPillView`) around the camera cutout |
 | `AudioRecorder` | Captures 16 kHz mono audio into memory |
 | `ChunkedTranscription` | Transcribes finished parts of the recording while you keep talking |

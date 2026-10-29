@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.provider.Settings
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -52,6 +53,7 @@ import io.github.jakub_m_arch.voicemator.dictation.DictationService
 import io.github.jakub_m_arch.voicemator.dictation.DictationState
 import io.github.jakub_m_arch.voicemator.dictation.DictationTileService
 import io.github.jakub_m_arch.voicemator.history.HistorySettingsCard
+import io.github.jakub_m_arch.voicemator.ime.VoiceInputMethodService
 import io.github.jakub_m_arch.voicemator.licenses.LicensesActivity
 import io.github.jakub_m_arch.voicemator.model.ModelState
 import io.github.jakub_m_arch.voicemator.model.ParakeetModel
@@ -69,6 +71,7 @@ fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewM
     var isTileAdded by remember { mutableStateOf(DictationTileService.isAdded(context)) }
     var canShowOverlay by remember { mutableStateOf(RecordingOverlay.canShow(context)) }
     var hasAccessibility by remember { mutableStateOf(DictationAccessibilityService.isEnabled(context)) }
+    var hasVoiceInput by remember { mutableStateOf(isVoiceInputEnabled(context)) }
 
     LifecycleResumeEffect(Unit) {
         hasMicrophone = DictationRequirements.hasMicrophonePermission(context)
@@ -76,6 +79,7 @@ fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewM
         isTileAdded = DictationTileService.isAdded(context)
         canShowOverlay = RecordingOverlay.canShow(context)
         hasAccessibility = DictationAccessibilityService.isEnabled(context)
+        hasVoiceInput = isVoiceInputEnabled(context)
         viewModel.refreshModelState()
         onPauseOrDispose {}
     }
@@ -154,6 +158,16 @@ fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewM
             }
         }
         if (hasAccessibility) KeyboardButtonCard()
+
+        SetupStep(
+            title = stringResource(R.string.setup_voice_input_title),
+            body = stringResource(R.string.setup_voice_input_body),
+            isDone = hasVoiceInput,
+        ) {
+            Button(onClick = { context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)) }) {
+                Text(stringResource(R.string.button_open_settings))
+            }
+        }
 
         TryItStep(
             state = dictationState,
@@ -305,6 +319,12 @@ private fun requestAddTile(context: Context, onAdded: () -> Unit) {
             onAdded()
         }
     }
+}
+
+private fun isVoiceInputEnabled(context: Context): Boolean {
+    val inputMethods = context.getSystemService<InputMethodManager>() ?: return false
+    val component = ComponentName(context, VoiceInputMethodService::class.java)
+    return inputMethods.enabledInputMethodList.any { it.component == component }
 }
 
 private fun overlaySettingsIntent(context: Context): Intent =

@@ -60,6 +60,19 @@
         </service>
 
         <service
+            android:name=".ime.VoiceInputMethodService"
+            android:exported="true"
+            android:label="@string/voice_input_label"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/voice_input_method" />
+        </service>
+
+        <service
             android:name=".dictation.DictationTileService"
             android:exported="true"
             android:icon="@drawable/ic_dictate"
