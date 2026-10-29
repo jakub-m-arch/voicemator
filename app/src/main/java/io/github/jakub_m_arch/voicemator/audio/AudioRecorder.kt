@@ -9,25 +9,38 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.io.IOException
+import kotlin.math.log10
+import kotlin.math.sqrt
 
-/** Records mono float PCM from the microphone into memory until [stop] is called. */
+/** Streams mono float PCM from the microphone until [stop] is called. */
 class AudioRecorder(private val sampleRate: Int) {
 
     @Volatile
     private var keepRecording = false
-    private var recording: Deferred<FloatArray>? = null
+    private var recording: Deferred<Unit>? = null
+    private val mutableLevel = MutableStateFlow(0f)
 
+    /** Loudness of the latest audio chunk, from 0 (silence) to 1 (loud speech). */
+    val level: StateFlow<Float> = mutableLevel.asStateFlow()
+
+    /**
+     * Starts recording. [onAudio] receives each chunk of samples and how many of them are valid,
+     * on a background thread; the array is reused, so copy what you keep.
+     */
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    fun start(scope: CoroutineScope) {
+    fun start(scope: CoroutineScope, onAudio: (samples: FloatArray, count: Int) -> Unit) {
         check(recording == null) { "Recording is already in progress" }
         val audioRecord = createAudioRecord()
         keepRecording = true
-        recording = scope.async(Dispatchers.IO) { readUntilStopped(audioRecord) }
+        recording = scope.async(Dispatchers.IO) { readUntilStopped(audioRecord, onAudio) }
     }
 
-    /** Stops recording and returns everything captured since [start]. */
-    suspend fun stop(): FloatArray {
+    /** Stops recording once the last chunk has been delivered to `onAudio`. */
+    suspend fun stop() {
         val current = checkNotNull(recording) { "Recording was not started" }
         keepRecording = false
         recording = null
@@ -52,36 +65,40 @@ class AudioRecorder(private val sampleRate: Int) {
         return audioRecord
     }
 
-    private fun readUntilStopped(audioRecord: AudioRecord): FloatArray {
-        val chunks = mutableListOf<FloatArray>()
+    private fun readUntilStopped(audioRecord: AudioRecord, onAudio: (FloatArray, Int) -> Unit) {
         val buffer = FloatArray(sampleRate / CHUNKS_PER_SECOND)
         try {
             audioRecord.startRecording()
             while (keepRecording) {
                 val read = audioRecord.read(buffer, 0, buffer.size, AudioRecord.READ_BLOCKING)
                 if (read < 0) throw IOException("Microphone read failed with code $read")
-                if (read > 0) chunks += buffer.copyOf(read)
+                if (read > 0) {
+                    onAudio(buffer, read)
+                    mutableLevel.value = loudness(buffer, read)
+                }
             }
         } finally {
             audioRecord.stop()
             audioRecord.release()
+            mutableLevel.value = 0f
         }
-        return concatenate(chunks)
     }
 
-    private fun concatenate(chunks: List<FloatArray>): FloatArray {
-        val result = FloatArray(chunks.sumOf { it.size })
-        var offset = 0
-        for (chunk in chunks) {
-            chunk.copyInto(result, offset)
-            offset += chunk.size
-        }
-        return result
+    /** Maps the RMS level of [count] samples from [MIN_DECIBELS]..[MAX_DECIBELS] to 0..1. */
+    private fun loudness(samples: FloatArray, count: Int): Float {
+        var sumOfSquares = 0.0
+        for (i in 0 until count) sumOfSquares += samples[i] * samples[i]
+        val rms = sqrt(sumOfSquares / count)
+        if (rms <= 0.0) return 0f
+        val decibels = 20 * log10(rms)
+        return ((decibels - MIN_DECIBELS) / (MAX_DECIBELS - MIN_DECIBELS)).toFloat().coerceIn(0f, 1f)
     }
 
     private companion object {
         const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
         const val ENCODING = AudioFormat.ENCODING_PCM_FLOAT
-        const val CHUNKS_PER_SECOND = 10
+        const val CHUNKS_PER_SECOND = 20
+        const val MIN_DECIBELS = -50.0
+        const val MAX_DECIBELS = -10.0
     }
 }

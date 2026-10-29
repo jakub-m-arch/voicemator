@@ -27,6 +27,8 @@
     <string name="setup_model_failed">Download failed. Check your connection and try again.</string>
     <string name="setup_tile_title">Quick Settings tile</string>
     <string name="setup_tile_body">Add the Dictate tile so dictation is one swipe away.</string>
+    <string name="setup_overlay_title">Recording indicator (optional)</string>
+    <string name="setup_overlay_body">Shows a pill around the camera while you dictate, with a live waveform. Tap it to stop. Needs permission to display over other apps.</string>
     <string name="setup_try_title">Try it</string>
     <string name="setup_try_body">Speak after tapping Start. The result is copied to your clipboard.</string>
 
@@ -34,6 +36,7 @@
     <string name="button_download">Download</string>
     <string name="button_retry">Retry</string>
     <string name="button_cancel">Cancel</string>
+    <string name="button_open_settings">Open settings</string>
     <string name="button_add_tile">Add tile</string>
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>

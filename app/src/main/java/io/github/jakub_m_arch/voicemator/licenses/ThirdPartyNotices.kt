@@ -181,14 +181,6 @@ object ThirdPartyNotices {
             url = "https://github.com/google/guava",
             licenseAsset = APACHE_2_ASSET,
         ),
-        ThirdPartyComponent(
-            name = "Material Icons (microphone icon)",
-            version = null,
-            copyright = "Copyright (c) Google LLC",
-            license = APACHE_2,
-            url = "https://github.com/google/material-design-icons",
-            licenseAsset = APACHE_2_ASSET,
-        ),
     )
 
     /** The speech model is not part of the APK; the app downloads it on request. */

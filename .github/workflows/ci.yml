@@ -22,7 +22,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Build and check
-        run: ./gradlew checkThirdPartyNotices lintDebug assembleDebug assembleDebugAndroidTest
+        run: ./gradlew checkThirdPartyNotices testDebugUnitTest lintDebug assembleDebug assembleDebugAndroidTest
 
       - uses: actions/upload-artifact@v4
         with:

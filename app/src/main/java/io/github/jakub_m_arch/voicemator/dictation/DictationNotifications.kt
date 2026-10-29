@@ -64,7 +64,7 @@ class DictationNotifications(private val context: Context) {
 
     private fun showResult(builder: NotificationCompat.Builder) {
         val notification = builder
-            .setSmallIcon(R.drawable.ic_mic)
+            .setSmallIcon(R.drawable.ic_dictate)
             .setContentIntent(openAppIntent())
             .setAutoCancel(true)
             .setTimeoutAfter(RESULT_TIMEOUT_MILLIS)
@@ -78,7 +78,7 @@ class DictationNotifications(private val context: Context) {
 
     private fun ongoing(titleRes: Int): NotificationCompat.Builder =
         NotificationCompat.Builder(context, CHANNEL_DICTATION)
-            .setSmallIcon(R.drawable.ic_mic)
+            .setSmallIcon(R.drawable.ic_dictate)
             .setContentTitle(context.getString(titleRes))
             .setContentIntent(openAppIntent())
             .setOngoing(true)

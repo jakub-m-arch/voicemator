@@ -11,38 +11,45 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.ServiceCompat
 import androidx.core.content.getSystemService
+import io.github.jakub_m_arch.voicemator.asr.ChunkedTranscription
 import io.github.jakub_m_arch.voicemator.asr.SpeechTranscriber
 import io.github.jakub_m_arch.voicemator.audio.AudioRecorder
 import io.github.jakub_m_arch.voicemator.model.ModelStorage
+import io.github.jakub_m_arch.voicemator.overlay.RecordingOverlay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Foreground service that records speech, transcribes it on-device and copies the text to the
  * clipboard.
  *
- * The model is loaded in parallel with recording, so its loading time is mostly hidden behind
- * the time the user spends speaking. It is released when the service stops to free memory.
+ * The model is loaded in parallel with recording, and longer recordings are transcribed in
+ * chunks while the user is still speaking, so the text is ready soon after dictation stops. The
+ * model is released when the service stops to free memory.
  */
 class DictationService : Service() {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val recorder = AudioRecorder(SpeechTranscriber.SAMPLE_RATE)
     private lateinit var notifications: DictationNotifications
+    private lateinit var overlay: RecordingOverlay
+    private var levelUpdates: Job? = null
 
     private var transcriber: Deferred<SpeechTranscriber>? = null
+    private var transcription: ChunkedTranscription? = null
     private var loadedTranscriber: SpeechTranscriber? = null
 
     override fun onCreate() {
         super.onCreate()
         notifications = DictationNotifications(this).apply { createChannels() }
+        overlay = RecordingOverlay(this, onTap = ::stopRecording)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -58,6 +65,7 @@ class DictationService : Service() {
 
     override fun onDestroy() {
         scope.cancel()
+        overlay.hide()
         loadedTranscriber?.close()
         DictationStatus.update(DictationState.Idle)
         super.onDestroy()
@@ -73,43 +81,43 @@ class DictationService : Service() {
         )
         if (DictationStatus.state.value != DictationState.Idle) return
 
+        val transcriber = transcriber ?: scope.async(Dispatchers.Default) {
+            SpeechTranscriber.load(ModelStorage(this@DictationService))
+                .also { loadedTranscriber = it }
+        }.also { transcriber = it }
+        val transcription =
+            ChunkedTranscription(scope, transcriber, SpeechTranscriber.SAMPLE_RATE, MIN_SAMPLES)
+
         try {
-            recorder.start(scope)
+            recorder.start(scope, transcription::append)
         } catch (e: Exception) {
+            transcription.cancel()
             finishWith { notifications.showFailure(e) }
             return
         }
+        this.transcription = transcription
         DictationStatus.update(DictationState.Recording)
-
-        if (transcriber == null) {
-            transcriber = scope.async(Dispatchers.Default) {
-                SpeechTranscriber.load(ModelStorage(this@DictationService))
-                    .also { loadedTranscriber = it }
-            }
-        }
+        overlay.show()
+        levelUpdates = scope.launch { recorder.level.collect(overlay::pushLevel) }
     }
 
     private fun stopRecording() {
         if (DictationStatus.state.value != DictationState.Recording) return
         DictationStatus.update(DictationState.Transcribing)
         notifications.update(notifications.transcribing())
+        levelUpdates?.cancel()
+        overlay.showTranscribing()
 
         scope.launch {
             try {
-                val samples = recorder.stop()
-                val text = if (samples.size < MIN_SAMPLES) {
-                    ""
-                } else {
-                    val transcriber = checkNotNull(transcriber).await()
-                    withContext(Dispatchers.Default) {
-                        transcriber.transcribe(samples, SpeechTranscriber.SAMPLE_RATE)
-                    }
-                }
+                recorder.stop()
+                val text = checkNotNull(transcription).finish()
                 finishWith {
                     if (text.isEmpty()) {
                         notifications.showNothingHeard()
                     } else {
                         copyToClipboard(text)
+                        overlay.finishWithSuccess()
                         notifications.showCopied(text)
                     }
                 }
@@ -126,14 +134,18 @@ class DictationService : Service() {
         if (DictationStatus.state.value != DictationState.Recording) return
         scope.launch {
             runCatching { recorder.stop() }
+            transcription?.cancel()
             finishWith {}
         }
     }
 
     private inline fun finishWith(report: () -> Unit) {
+        levelUpdates?.cancel()
+        transcription = null
         DictationStatus.update(DictationState.Idle)
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         report()
+        overlay.hide()
         stopSelf()
     }
 

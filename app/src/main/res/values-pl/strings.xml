@@ -25,6 +25,8 @@
     <string name="setup_model_failed">Pobieranie nie powiodło się. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="setup_tile_title">Kafelek w szybkich ustawieniach</string>
     <string name="setup_tile_body">Dodaj kafelek Dyktuj, żeby dyktowanie było zawsze pod ręką.</string>
+    <string name="setup_overlay_title">Wskaźnik nagrywania (opcjonalnie)</string>
+    <string name="setup_overlay_body">Podczas dyktowania wokół aparatu pojawia się pigułka z falą dźwięku na żywo. Dotknij jej, żeby zakończyć. Wymaga zgody na wyświetlanie nad innymi aplikacjami.</string>
     <string name="setup_try_title">Wypróbuj</string>
     <string name="setup_try_body">Mów po dotknięciu Start. Wynik zostanie skopiowany do schowka.</string>
 
@@ -32,6 +34,7 @@
     <string name="button_download">Pobierz</string>
     <string name="button_retry">Ponów</string>
     <string name="button_cancel">Anuluj</string>
+    <string name="button_open_settings">Otwórz ustawienia</string>
     <string name="button_add_tile">Dodaj kafelek</string>
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>

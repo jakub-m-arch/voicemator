@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import io.github.jakub_m_arch.voicemator.model.ModelStorage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
@@ -36,6 +39,29 @@ class SpeechTranscriberTest {
         assertTrue("Unexpected transcription: $text", text.contains("satelity", ignoreCase = true))
     }
 
+    @Test
+    fun transcribesLongRecordingInChunks() = runBlocking {
+        val storage = ModelStorage(instrumentation.targetContext)
+        assumeTrue("Speech model is not installed", storage.isInstalled())
+
+        // About 36 seconds: long enough to be split into chunks while "recording".
+        val clip = instrumentation.context.assets.open("fleurs-pl.wav").use(::readPcm16Wav)
+        val pause = FloatArray(SpeechTranscriber.SAMPLE_RATE * 4 / 5)
+        val recording = List(REPEATS) { clip + pause }.reduce(FloatArray::plus)
+
+        val transcriber = async(Dispatchers.Default) { SpeechTranscriber.load(storage) }
+        val transcription = ChunkedTranscription(this, transcriber, SpeechTranscriber.SAMPLE_RATE, minSamples = 1)
+        recording.toList().chunked(SpeechTranscriber.SAMPLE_RATE / 20).forEach {
+            transcription.append(it.toFloatArray(), it.size)
+        }
+        val text = transcription.finish()
+        transcriber.await().close()
+        Log.i(TAG, "Chunked transcription: $text")
+
+        val mentions = Regex("satelit", RegexOption.IGNORE_CASE).findAll(text).count()
+        assertEquals("Unexpected transcription: $text", REPEATS, mentions)
+    }
+
     /** Reads a 16-bit mono WAV file sampled at [SpeechTranscriber.SAMPLE_RATE]. */
     private fun readPcm16Wav(input: InputStream): FloatArray {
         val buffer = ByteBuffer.wrap(input.readBytes()).order(ByteOrder.LITTLE_ENDIAN)
@@ -65,5 +91,6 @@ class SpeechTranscriberTest {
         const val RIFF_HEADER_SIZE = 12
         const val CHUNK_HEADER_SIZE = 8
         const val PCM16_SCALE = 32768f
+        const val REPEATS = 5
     }
 }

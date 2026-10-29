@@ -17,7 +17,11 @@ Hugging Face user leogaudin.
 
 - Quick Settings tile that starts and stops dictation from anywhere
 - Fully offline transcription after a one-time model download (~670 MB)
+- Long dictations are transcribed in the background while you speak, so the text is ready right
+  after you stop
 - Result copied to the clipboard, with a notification showing the text
+- Optional recording indicator: a pill around the camera with a live waveform, like VoiceInk's
+  notch; tap it to stop
 - Stop or cancel from the ongoing notification
 
 ## Requirements
@@ -65,8 +69,16 @@ the base64 value) to build a signed release with `./gradlew assembleRelease`.
 ## Testing
 
 `SpeechTranscriberTest` transcribes a short Polish recording from the
-[FLEURS](https://huggingface.co/datasets/google/fleurs) dataset on a device or emulator. It is
-skipped unless the model is installed, so download it in the app first, then run:
+[FLEURS](https://huggingface.co/datasets/google/fleurs) dataset on a device or emulator, both as is
+and repeated into a 36-second recording that is transcribed in chunks. Unit tests cover the
+recording segmenter and the pill layout:
+
+```bash
+./gradlew testDebugUnitTest
+```
+
+The device tests are skipped unless the model is installed, so download it in the app first,
+then run:
 
 ```bash
 ./gradlew connectedDebugAndroidTest
@@ -74,7 +86,8 @@ skipped unless the model is installed, so download it in the app first, then run
 
 ## Usage
 
-1. Open Voicemator and grant microphone and notification access.
+1. Open Voicemator and grant microphone and notification access. Optionally allow it to display
+   over other apps to get the recording indicator.
 2. Download the speech model.
 3. Add the **Dictate** tile to Quick Settings.
 4. Tap the tile, speak, and tap it again. Paste the text wherever you need it.
@@ -86,12 +99,18 @@ skipped unless the model is installed, so download it in the app first, then run
 | `DictationTileService` | Quick Settings tile that reflects and toggles the dictation state |
 | `DictationTriggerActivity` | Invisible activity that starts recording; Android only allows microphone access from services started while the app is in the foreground |
 | `DictationService` | Foreground service that records, transcribes and copies the result |
+| `RecordingOverlay` | Draws the recording pill (`RecordingPillView`) around the camera cutout |
 | `AudioRecorder` | Captures 16 kHz mono audio into memory |
+| `ChunkedTranscription` | Transcribes finished parts of the recording while you keep talking |
+| `RecordingSegmenter` | Cuts long recordings at a pause after about 20 seconds |
 | `SpeechTranscriber` | Wraps the sherpa-onnx offline recognizer |
 | `ModelDownloader` | Fetches the model through the system `DownloadManager` |
 
-The model loads while you speak, which hides most of its startup time. It is released when
-dictation finishes to keep memory free.
+The model loads while you speak, which hides most of its startup time. Recording never stops on
+its own: dictation lasts until you tap the tile, the pill or Stop in the notification. Once a
+recording passes about 20 seconds, it is cut at the quietest moment within the next few seconds,
+and that part is transcribed in the background; when you stop, only the last part is left to
+transcribe. The model is released when dictation finishes to keep memory free.
 
 ## Privacy
 

@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -49,6 +51,7 @@ import io.github.jakub_m_arch.voicemator.dictation.DictationTileService
 import io.github.jakub_m_arch.voicemator.licenses.LicensesActivity
 import io.github.jakub_m_arch.voicemator.model.ModelState
 import io.github.jakub_m_arch.voicemator.model.ParakeetModel
+import io.github.jakub_m_arch.voicemator.overlay.RecordingOverlay
 import kotlin.math.roundToInt
 
 @Composable
@@ -60,11 +63,13 @@ fun SetupScreen(viewModel: SetupViewModel = viewModel()) {
     var hasMicrophone by remember { mutableStateOf(DictationRequirements.hasMicrophonePermission(context)) }
     var hasNotifications by remember { mutableStateOf(DictationRequirements.hasNotificationPermission(context)) }
     var isTileAdded by remember { mutableStateOf(DictationTileService.isAdded(context)) }
+    var canShowOverlay by remember { mutableStateOf(RecordingOverlay.canShow(context)) }
 
     LifecycleResumeEffect(Unit) {
         hasMicrophone = DictationRequirements.hasMicrophonePermission(context)
         hasNotifications = DictationRequirements.hasNotificationPermission(context)
         isTileAdded = DictationTileService.isAdded(context)
+        canShowOverlay = RecordingOverlay.canShow(context)
         viewModel.refreshModelState()
         onPauseOrDispose {}
     }
@@ -121,6 +126,16 @@ fun SetupScreen(viewModel: SetupViewModel = viewModel()) {
             ) {
                 Button(onClick = { requestAddTile(context) { isTileAdded = true } }) {
                     Text(stringResource(R.string.button_add_tile))
+                }
+            }
+
+            SetupStep(
+                title = stringResource(R.string.setup_overlay_title),
+                body = stringResource(R.string.setup_overlay_body),
+                isDone = canShowOverlay,
+            ) {
+                Button(onClick = { context.startActivity(overlaySettingsIntent(context)) }) {
+                    Text(stringResource(R.string.button_open_settings))
                 }
             }
 
@@ -240,7 +255,7 @@ private fun requestAddTile(context: Context, onAdded: () -> Unit) {
     statusBarManager.requestAddTileService(
         ComponentName(context, DictationTileService::class.java),
         context.getString(R.string.tile_label),
-        Icon.createWithResource(context, R.drawable.ic_mic),
+        Icon.createWithResource(context, R.drawable.ic_dictate),
         ContextCompat.getMainExecutor(context),
     ) { result ->
         if (result == StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED ||
@@ -251,5 +266,8 @@ private fun requestAddTile(context: Context, onAdded: () -> Unit) {
         }
     }
 }
+
+private fun overlaySettingsIntent(context: Context): Intent =
+    Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, "package:${context.packageName}".toUri())
 
 private const val BYTES_PER_MEGABYTE = 1_000_000L
