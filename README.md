@@ -32,7 +32,9 @@ Hugging Face user leogaudin.
 - Optional recording indicator: a pill around the camera with a live waveform, like VoiceInk's
   notch; tap it to stop
 - Stop or cancel from the ongoing notification
-- History of your dictations, kept on the device; it can be turned off and cleared
+- History of your dictations, kept on the device, in one of three modes: full (text and
+  statistics), statistics only (word counts and times, no text, nothing to read back) or off;
+  saved texts can be removed while keeping the statistics
 - Statistics: words today and in total, a streak, speaking pace, an estimate of the time saved
   compared with typing, words per day for the last two weeks and a six-month activity heatmap
 
@@ -128,7 +130,7 @@ then run:
 | `ChunkedTranscription` | Transcribes finished parts of the recording while you keep talking |
 | `RecordingSegmenter` | Cuts long recordings at a pause after about 20 seconds |
 | `SpeechTranscriber` | Wraps the sherpa-onnx offline recognizer |
-| `HistoryRepository` | Saves dictations in a local Room database, unless history is turned off |
+| `HistoryRepository` | Saves dictations in a local Room database, with or without their text, as the history mode says |
 | `UsageStatistics` | Derives the numbers, the daily chart and the heatmap from the history |
 | `ModelDownloader` | Fetches the model through the system `DownloadManager` |
 
@@ -141,9 +143,10 @@ transcribe. The model is released when dictation finishes to keep memory free.
 ## Privacy
 
 Voicemator has no analytics, accounts or servers. Audio is recorded into memory, transcribed on
-the device and discarded; only the text is placed on the clipboard. With history on (the
+the device and discarded; only the text is placed on the clipboard. With full history (the
 default), the text is also saved in the app's private storage on the device, excluded from
-backups; turn it off or clear it under Settings. The app connects to the
+backups. Under Settings you can keep statistics only, which stores word counts, lengths and times
+but no text, turn history off, remove saved texts, or clear everything. The app connects to the
 internet once, to download the speech model from Hugging Face, which sees the request like any
 other download.
 

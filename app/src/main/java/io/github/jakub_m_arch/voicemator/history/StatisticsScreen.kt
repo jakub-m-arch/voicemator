@@ -65,8 +65,9 @@ fun StatisticsScreen(contentPadding: PaddingValues, viewModel: HistoryViewModel 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            // Padding outside the scroll keeps content from sliding under the status bar.
             .padding(contentPadding)
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

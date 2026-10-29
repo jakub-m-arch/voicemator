@@ -60,14 +60,13 @@
     <string name="history_copy">Kopiuj</string>
     <string name="history_delete">Usuń</string>
     <string name="history_settings_title">Historia</string>
-    <string name="history_settings_body">Zapisuje dyktowania na tym urządzeniu na potrzeby zakładek Historia i Statystyki. Nic nie jest nigdzie wysyłane.</string>
-    <string name="history_settings_switch">Zapisuj dyktowania</string>
-    <string name="history_clear">Wyczyść historię</string>
+    <string name="history_settings_body">Wybierz, co zostaje na tym urządzeniu po każdym dyktowaniu. Nic nie jest nigdzie wysyłane.</string>
+    <string name="history_clear">Wyczyść historię i statystyki</string>
     <string name="history_clear_confirm_title">Wyczyścić historię?</string>
     <string name="history_clear_confirm_body">Wszystkie zapisane dyktowania i oparte na nich statystyki zostaną usunięte. Tego nie da się cofnąć.</string>
 
     <string name="stats_title">Statystyki</string>
-    <string name="stats_empty">Statystyki pojawią się, gdy coś podyktujesz przy włączonej historii.</string>
+    <string name="stats_empty">Statystyki pojawią się, gdy coś podyktujesz przy włączonej historii lub samych statystykach.</string>
     <string name="stats_words_today">Słowa dzisiaj</string>
     <string name="stats_total_words">Słowa łącznie</string>
     <string name="stats_time_saved">Zaoszczędzony czas</string>
@@ -121,4 +120,18 @@
     <string name="voice_input_setup_needed">Najpierw dokończ konfigurację Voicematora. Dotknij tutaj, żeby go otworzyć.</string>
     <string name="setup_voice_input_title">Wprowadzanie głosowe dla klawiatury (opcjonalnie)</string>
     <string name="setup_voice_input_body">Pozwala klawiaturom z klawiszem mikrofonu używać Voicematora. Włącz Wprowadzanie głosowe Voicemator w ustawieniach klawiatur. W klawiaturze FUTO otwórz też Ustawienia → Voice input i włącz „Disable built-in voice input”. Potem dotknij mikrofonu na klawiaturze: dyktowanie startuje od razu, a zatrzymanie wpisuje tekst i wraca do klawiatury.</string>
+
+    <string name="history_mode_full">Pełna historia</string>
+    <string name="history_mode_full_body">Zapisuje treść każdego dyktowania, do przeczytania i skopiowania, oraz statystyki.</string>
+    <string name="history_mode_statistics">Tylko statystyki</string>
+    <string name="history_mode_statistics_body">Zapisuje tylko liczbę słów, długość i godzinę. Statystyki działają, ale tego, co mówisz, nie da się odczytać.</string>
+    <string name="history_mode_off">Wyłączona</string>
+    <string name="history_mode_off_body">Nic nie jest zapisywane.</string>
+    <string name="history_statistics_only">Zapisywane są tylko statystyki: dyktowania są liczone, ale ich treść nie jest zapisywana ani pokazywana.</string>
+    <string name="history_mode_change_title">Usunąć też zapisane teksty?</string>
+    <string name="history_mode_change_body">Nowe dyktowania nie będą zapisywać treści. Dotychczasowe teksty możesz usunąć teraz; ich statystyki zostaną.</string>
+    <string name="history_remove_texts">Usuń teksty, zachowaj statystyki</string>
+    <string name="history_keep_texts">Zostaw</string>
+    <string name="history_remove_texts_confirm_title">Usunąć wszystkie zapisane teksty?</string>
+    <string name="history_remove_texts_confirm_body">Treść wszystkich zapisanych dyktowań zostanie usunięta. Statystyki zostaną. Tego nie da się cofnąć.</string>
 </resources>

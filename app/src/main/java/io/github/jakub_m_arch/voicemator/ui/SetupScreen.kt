@@ -94,8 +94,9 @@ fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewM
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            // Padding outside the scroll keeps content from sliding under the status bar.
             .padding(contentPadding)
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

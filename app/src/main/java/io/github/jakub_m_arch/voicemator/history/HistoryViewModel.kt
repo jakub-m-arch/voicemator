@@ -17,7 +17,10 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
 
     private val repository = HistoryRepository.get(application)
 
-    val isEnabled: StateFlow<Boolean> = repository.isEnabled
+    val mode: StateFlow<HistoryMode> = repository.mode
+
+    val textCount: StateFlow<Int> = repository.textCount
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), 0)
 
     /** Null until the first load finishes, so screens do not flash their empty state. */
     val transcriptions: StateFlow<List<Transcription>?> = repository.transcriptions
@@ -31,7 +34,11 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), null)
 
-    fun setEnabled(enabled: Boolean) = repository.setEnabled(enabled)
+    fun setMode(mode: HistoryMode) = repository.setMode(mode)
+
+    fun removeTexts() {
+        viewModelScope.launch { repository.removeTexts() }
+    }
 
     fun delete(transcription: Transcription) {
         viewModelScope.launch { repository.delete(transcription.id) }

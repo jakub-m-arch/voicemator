@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TranscriptionDao {
 
-    @Query("SELECT * FROM transcriptions ORDER BY created_at DESC")
-    fun observeAll(): Flow<List<Transcription>>
+    /** Entries whose text was kept, newest first. */
+    @Query("SELECT * FROM transcriptions WHERE text != '' ORDER BY created_at DESC")
+    fun observeWithText(): Flow<List<Transcription>>
 
     @Query("SELECT created_at, word_count, audio_duration_ms FROM transcriptions")
     fun observeUsage(): Flow<List<UsageEntry>>
@@ -22,4 +23,11 @@ interface TranscriptionDao {
 
     @Query("DELETE FROM transcriptions")
     suspend fun deleteAll()
+
+    /** Erases every text, keeping what statistics need. */
+    @Query("UPDATE transcriptions SET text = ''")
+    suspend fun clearTexts()
+
+    @Query("SELECT COUNT(*) FROM transcriptions WHERE text != ''")
+    fun observeTextCount(): Flow<Int>
 }

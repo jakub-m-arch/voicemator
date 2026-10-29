@@ -11,6 +11,7 @@ data class Transcription(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     /** When dictation finished, in milliseconds since the epoch. */
     @ColumnInfo(name = "created_at") val createdAt: Long,
+    /** Empty when only statistics are kept. */
     val text: String,
     @ColumnInfo(name = "word_count") val wordCount: Int,
     @ColumnInfo(name = "audio_duration_ms") val audioDurationMillis: Long,
