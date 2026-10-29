@@ -9,6 +9,7 @@
     <string name="notification_recording">Słucham…</string>
     <string name="notification_transcribing">Przepisuję…</string>
     <string name="notification_copied">Skopiowano do schowka</string>
+    <string name="notification_inserted">Wstawiono w pole tekstowe</string>
     <string name="notification_nothing_heard">Nie wykryto mowy</string>
     <string name="notification_failed">Dyktowanie nie powiodło się</string>
     <string name="action_stop">Zatrzymaj</string>
@@ -46,4 +47,64 @@
     <string name="licenses_bundled_section">Dołączone do aplikacji</string>
     <string name="licenses_downloaded_section">Model mowy, pobierany na żądanie</string>
     <string name="button_back">Wstecz</string>
+
+    <string name="tab_history">Historia</string>
+    <string name="tab_statistics">Statystyki</string>
+    <string name="tab_settings">Ustawienia</string>
+
+    <string name="history_title">Historia</string>
+    <string name="history_empty">Tu pojawią się Twoje dyktowania.</string>
+    <string name="history_disabled">Historia jest wyłączona. Nowe dyktowania nie są zapisywane.</string>
+    <string name="history_today">Dzisiaj</string>
+    <string name="history_yesterday">Wczoraj</string>
+    <string name="history_copy">Kopiuj</string>
+    <string name="history_delete">Usuń</string>
+    <string name="history_settings_title">Historia</string>
+    <string name="history_settings_body">Zapisuje dyktowania na tym urządzeniu na potrzeby zakładek Historia i Statystyki. Nic nie jest nigdzie wysyłane.</string>
+    <string name="history_settings_switch">Zapisuj dyktowania</string>
+    <string name="history_clear">Wyczyść historię</string>
+    <string name="history_clear_confirm_title">Wyczyścić historię?</string>
+    <string name="history_clear_confirm_body">Wszystkie zapisane dyktowania i oparte na nich statystyki zostaną usunięte. Tego nie da się cofnąć.</string>
+
+    <string name="stats_title">Statystyki</string>
+    <string name="stats_empty">Statystyki pojawią się, gdy coś podyktujesz przy włączonej historii.</string>
+    <string name="stats_words_today">Słowa dzisiaj</string>
+    <string name="stats_total_words">Słowa łącznie</string>
+    <string name="stats_time_saved">Zaoszczędzony czas</string>
+    <string name="stats_pace">Tempo mówienia</string>
+    <string name="stats_pace_value">%1$d sł./min</string>
+    <string name="stats_streak">Seria</string>
+    <string name="stats_last_days">Ostatnie 14 dni</string>
+    <string name="stats_activity">Aktywność</string>
+    <string name="stats_less">Mniej</string>
+    <string name="stats_more">Więcej</string>
+    <string name="stats_tap_hint">Dotknij dnia, żeby zobaczyć szczegóły.</string>
+    <string name="stats_time_saved_note">Szacunek: pisanie na telefonie w tempie około %1$d słów na minutę minus czas mówienia.</string>
+    <string name="stats_minutes">%1$d min</string>
+    <string name="stats_hours_minutes">%1$d godz. %2$d min</string>
+    <string name="stats_day_detail">%1$s: %2$s</string>
+    <plurals name="stats_words">
+        <item quantity="one">%1$s słowo</item>
+        <item quantity="few">%1$s słowa</item>
+        <item quantity="many">%1$s słów</item>
+        <item quantity="other">%1$s słowa</item>
+    </plurals>
+    <plurals name="stats_days">
+        <item quantity="one">%1$d dzień</item>
+        <item quantity="few">%1$d dni</item>
+        <item quantity="many">%1$d dni</item>
+        <item quantity="other">%1$d dnia</item>
+    </plurals>
+    <plurals name="stats_dictations">
+        <item quantity="one">%1$s dyktowanie</item>
+        <item quantity="few">%1$s dyktowania</item>
+        <item quantity="many">%1$s dyktowań</item>
+        <item quantity="other">%1$s dyktowania</item>
+    </plurals>
+
+    <string name="accessibility_label">Dyktowanie Voicemator</string>
+    <string name="accessibility_summary">Pływający przycisk do dyktowania i tekst wpisywany od razu w edytowane pole.</string>
+    <string name="accessibility_description">Dodaje pływający przycisk ułatwień dostępu, który włącza i wyłącza dyktowanie, oraz wkleja przepisany tekst w pole, które edytujesz. Żeby znaleźć to pole, Voicemator sprawdza ekran tylko w chwili wstawiania tekstu. Mowa jest przetwarzana na tym urządzeniu; nic nie jest nigdzie wysyłane ani zapisywane poza aplikacją.</string>
+    <string name="setup_accessibility_title">Pływający przycisk i wpisywanie w pola (opcjonalnie)</string>
+    <string name="setup_accessibility_body">Włącz Voicemator w ustawieniach ułatwień dostępu i wybierz pływający przycisk ułatwień dostępu jako skrót. Dotknij przycisku, żeby dyktować; tekst trafi od razu w pole, które edytujesz. Android ostrzeże, że aplikacja widzi ekran: Voicemator używa tego tylko do znalezienia aktywnego pola przy wstawianiu tekstu.</string>
 </resources>

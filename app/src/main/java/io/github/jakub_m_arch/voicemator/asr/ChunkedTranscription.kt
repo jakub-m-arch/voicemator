@@ -25,6 +25,9 @@ class ChunkedTranscription(
     @Volatile
     private var recordedSamples = 0L
 
+    /** Length of the audio received so far. */
+    val recordedMillis: Long get() = recordedSamples * MILLIS_PER_SECOND / sampleRate
+
     private val transcripts: Deferred<List<String>> = scope.async(Dispatchers.Default) {
         val results = mutableListOf<String>()
         for (chunk in chunks) {
@@ -56,5 +59,9 @@ class ChunkedTranscription(
     fun cancel() {
         chunks.cancel()
         transcripts.cancel()
+    }
+
+    private companion object {
+        const val MILLIS_PER_SECOND = 1000L
     }
 }

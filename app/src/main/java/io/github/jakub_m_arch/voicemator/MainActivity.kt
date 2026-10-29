@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import io.github.jakub_m_arch.voicemator.ui.SetupScreen
+import io.github.jakub_m_arch.voicemator.ui.VoicematorApp
 import io.github.jakub_m_arch.voicemator.ui.theme.VoicematorTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VoicematorTheme {
-                SetupScreen()
+                VoicematorApp()
             }
         }
     }

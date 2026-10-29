@@ -4,16 +4,20 @@ import android.annotation.SuppressLint
 import android.app.Service
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.IBinder
+import android.service.quicksettings.TileService
 import android.util.Log
 import androidx.core.app.ServiceCompat
 import androidx.core.content.getSystemService
+import io.github.jakub_m_arch.voicemator.accessibility.DictationAccessibilityService
 import io.github.jakub_m_arch.voicemator.asr.ChunkedTranscription
 import io.github.jakub_m_arch.voicemator.asr.SpeechTranscriber
 import io.github.jakub_m_arch.voicemator.audio.AudioRecorder
+import io.github.jakub_m_arch.voicemator.history.HistoryRepository
 import io.github.jakub_m_arch.voicemator.model.ModelStorage
 import io.github.jakub_m_arch.voicemator.overlay.RecordingOverlay
 import kotlinx.coroutines.CoroutineScope
@@ -24,11 +28,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Foreground service that records speech, transcribes it on-device and copies the text to the
- * clipboard.
+ * clipboard. When [DictationAccessibilityService] is on, the text is also pasted into the focused
+ * text field.
  *
  * The model is loaded in parallel with recording, and longer recordings are transcribed in
  * chunks while the user is still speaking, so the text is ready soon after dictation stops. The
@@ -67,7 +73,7 @@ class DictationService : Service() {
         scope.cancel()
         overlay.hide()
         loadedTranscriber?.close()
-        DictationStatus.update(DictationState.Idle)
+        updateState(DictationState.Idle)
         super.onDestroy()
     }
 
@@ -96,14 +102,14 @@ class DictationService : Service() {
             return
         }
         this.transcription = transcription
-        DictationStatus.update(DictationState.Recording)
+        updateState(DictationState.Recording)
         overlay.show()
         levelUpdates = scope.launch { recorder.level.collect(overlay::pushLevel) }
     }
 
     private fun stopRecording() {
         if (DictationStatus.state.value != DictationState.Recording) return
-        DictationStatus.update(DictationState.Transcribing)
+        updateState(DictationState.Transcribing)
         notifications.update(notifications.transcribing())
         levelUpdates?.cancel()
         overlay.showTranscribing()
@@ -111,14 +117,17 @@ class DictationService : Service() {
         scope.launch {
             try {
                 recorder.stop()
-                val text = checkNotNull(transcription).finish()
-                finishWith {
-                    if (text.isEmpty()) {
-                        notifications.showNothingHeard()
-                    } else {
-                        copyToClipboard(text)
+                val transcription = checkNotNull(transcription)
+                val text = transcription.finish()
+                if (text.isEmpty()) {
+                    finishWith { notifications.showNothingHeard() }
+                } else {
+                    copyToClipboard(text)
+                    val inserted = DictationAccessibilityService.pasteIntoFocusedField()
+                    saveToHistory(text, transcription.recordedMillis)
+                    finishWith {
                         overlay.finishWithSuccess()
-                        notifications.showCopied(text)
+                        notifications.showResult(text, inserted)
                     }
                 }
             } catch (e: CancellationException) {
@@ -142,11 +151,29 @@ class DictationService : Service() {
     private inline fun finishWith(report: () -> Unit) {
         levelUpdates?.cancel()
         transcription = null
-        DictationStatus.update(DictationState.Idle)
+        updateState(DictationState.Idle)
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         report()
         overlay.hide()
         stopSelf()
+    }
+
+    private suspend fun saveToHistory(text: String, audioDurationMillis: Long) {
+        try {
+            val history = HistoryRepository.get(this)
+            withContext(Dispatchers.IO) { history.record(text, audioDurationMillis) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // The text is already on the clipboard; a history failure must not lose it.
+            Log.e(TAG, "Saving to history failed", e)
+        }
+    }
+
+    /** Publishes [state] and asks the system to redraw the tile, which it does not do on its own. */
+    private fun updateState(state: DictationState) {
+        DictationStatus.update(state)
+        TileService.requestListeningState(this, ComponentName(this, DictationTileService::class.java))
     }
 
     private fun copyToClipboard(text: String) {

@@ -44,9 +44,12 @@ class DictationNotifications(private val context: Context) {
             .setProgress(0, 0, true)
             .build()
 
-    fun showCopied(text: String) = showResult(
+    /** Reports a transcription that was [inserted] into a text field or only copied. */
+    fun showResult(text: String, inserted: Boolean) = showResult(
         NotificationCompat.Builder(context, CHANNEL_RESULTS)
-            .setContentTitle(context.getString(R.string.notification_copied))
+            .setContentTitle(
+                context.getString(if (inserted) R.string.notification_inserted else R.string.notification_copied),
+            )
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text)),
     )

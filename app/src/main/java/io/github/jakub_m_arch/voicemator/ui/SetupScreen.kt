@@ -10,6 +10,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +25,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,10 +44,12 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.jakub_m_arch.voicemator.R
+import io.github.jakub_m_arch.voicemator.accessibility.DictationAccessibilityService
 import io.github.jakub_m_arch.voicemator.dictation.DictationRequirements
 import io.github.jakub_m_arch.voicemator.dictation.DictationService
 import io.github.jakub_m_arch.voicemator.dictation.DictationState
 import io.github.jakub_m_arch.voicemator.dictation.DictationTileService
+import io.github.jakub_m_arch.voicemator.history.HistorySettingsCard
 import io.github.jakub_m_arch.voicemator.licenses.LicensesActivity
 import io.github.jakub_m_arch.voicemator.model.ModelState
 import io.github.jakub_m_arch.voicemator.model.ParakeetModel
@@ -55,7 +57,7 @@ import io.github.jakub_m_arch.voicemator.overlay.RecordingOverlay
 import kotlin.math.roundToInt
 
 @Composable
-fun SetupScreen(viewModel: SetupViewModel = viewModel()) {
+fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewModel()) {
     val context = LocalContext.current
     val modelState by viewModel.modelState.collectAsStateWithLifecycle()
     val dictationState by viewModel.dictationState.collectAsStateWithLifecycle()
@@ -64,12 +66,14 @@ fun SetupScreen(viewModel: SetupViewModel = viewModel()) {
     var hasNotifications by remember { mutableStateOf(DictationRequirements.hasNotificationPermission(context)) }
     var isTileAdded by remember { mutableStateOf(DictationTileService.isAdded(context)) }
     var canShowOverlay by remember { mutableStateOf(RecordingOverlay.canShow(context)) }
+    var hasAccessibility by remember { mutableStateOf(DictationAccessibilityService.isEnabled(context)) }
 
     LifecycleResumeEffect(Unit) {
         hasMicrophone = DictationRequirements.hasMicrophonePermission(context)
         hasNotifications = DictationRequirements.hasNotificationPermission(context)
         isTileAdded = DictationTileService.isAdded(context)
         canShowOverlay = RecordingOverlay.canShow(context)
+        hasAccessibility = DictationAccessibilityService.isEnabled(context)
         viewModel.refreshModelState()
         onPauseOrDispose {}
     }
@@ -81,76 +85,86 @@ fun SetupScreen(viewModel: SetupViewModel = viewModel()) {
         ActivityResultContracts.RequestPermission(),
     ) { granted -> hasNotifications = granted }
 
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(contentPadding)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(R.string.setup_intro), style = MaterialTheme.typography.bodyMedium)
+
+        SetupStep(
+            title = stringResource(R.string.setup_microphone_title),
+            body = stringResource(R.string.setup_microphone_body),
+            isDone = hasMicrophone,
         ) {
-            Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineMedium)
-            Text(stringResource(R.string.setup_intro), style = MaterialTheme.typography.bodyMedium)
-
-            SetupStep(
-                title = stringResource(R.string.setup_microphone_title),
-                body = stringResource(R.string.setup_microphone_body),
-                isDone = hasMicrophone,
-            ) {
-                Button(onClick = { microphoneLauncher.launch(Manifest.permission.RECORD_AUDIO) }) {
-                    Text(stringResource(R.string.button_grant))
-                }
+            Button(onClick = { microphoneLauncher.launch(Manifest.permission.RECORD_AUDIO) }) {
+                Text(stringResource(R.string.button_grant))
             }
+        }
 
-            SetupStep(
-                title = stringResource(R.string.setup_notifications_title),
-                body = stringResource(R.string.setup_notifications_body),
-                isDone = hasNotifications,
-            ) {
-                Button(onClick = { notificationsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }) {
-                    Text(stringResource(R.string.button_grant))
-                }
+        SetupStep(
+            title = stringResource(R.string.setup_notifications_title),
+            body = stringResource(R.string.setup_notifications_body),
+            isDone = hasNotifications,
+        ) {
+            Button(onClick = { notificationsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }) {
+                Text(stringResource(R.string.button_grant))
             }
+        }
 
-            ModelStep(
-                state = modelState,
-                onDownload = viewModel::downloadModel,
-                onCancel = viewModel::cancelDownload,
-            )
+        ModelStep(
+            state = modelState,
+            onDownload = viewModel::downloadModel,
+            onCancel = viewModel::cancelDownload,
+        )
 
-            SetupStep(
-                title = stringResource(R.string.setup_tile_title),
-                body = stringResource(R.string.setup_tile_body),
-                isDone = isTileAdded,
-            ) {
-                Button(onClick = { requestAddTile(context) { isTileAdded = true } }) {
-                    Text(stringResource(R.string.button_add_tile))
-                }
+        SetupStep(
+            title = stringResource(R.string.setup_tile_title),
+            body = stringResource(R.string.setup_tile_body),
+            isDone = isTileAdded,
+        ) {
+            Button(onClick = { requestAddTile(context) { isTileAdded = true } }) {
+                Text(stringResource(R.string.button_add_tile))
             }
+        }
 
-            SetupStep(
-                title = stringResource(R.string.setup_overlay_title),
-                body = stringResource(R.string.setup_overlay_body),
-                isDone = canShowOverlay,
-            ) {
-                Button(onClick = { context.startActivity(overlaySettingsIntent(context)) }) {
-                    Text(stringResource(R.string.button_open_settings))
-                }
+        SetupStep(
+            title = stringResource(R.string.setup_overlay_title),
+            body = stringResource(R.string.setup_overlay_body),
+            isDone = canShowOverlay,
+        ) {
+            Button(onClick = { context.startActivity(overlaySettingsIntent(context)) }) {
+                Text(stringResource(R.string.button_open_settings))
             }
+        }
 
-            TryItStep(
-                state = dictationState,
-                isReady = hasMicrophone && modelState == ModelState.Installed,
-                onStart = {
-                    ContextCompat.startForegroundService(context, DictationService.startIntent(context))
-                },
-                onStop = { context.startService(DictationService.stopIntent(context)) },
-            )
-
-            TextButton(onClick = { context.startActivity(Intent(context, LicensesActivity::class.java)) }) {
-                Text(stringResource(R.string.licenses_title))
+        SetupStep(
+            title = stringResource(R.string.setup_accessibility_title),
+            body = stringResource(R.string.setup_accessibility_body),
+            isDone = hasAccessibility,
+        ) {
+            Button(onClick = { context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }) {
+                Text(stringResource(R.string.button_open_settings))
             }
+        }
+
+        TryItStep(
+            state = dictationState,
+            isReady = hasMicrophone && modelState == ModelState.Installed,
+            onStart = {
+                ContextCompat.startForegroundService(context, DictationService.startIntent(context))
+            },
+            onStop = { context.startService(DictationService.stopIntent(context)) },
+        )
+
+        HistorySettingsCard()
+
+        TextButton(onClick = { context.startActivity(Intent(context, LicensesActivity::class.java)) }) {
+            Text(stringResource(R.string.licenses_title))
         }
     }
 }

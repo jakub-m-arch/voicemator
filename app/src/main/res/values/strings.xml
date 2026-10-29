@@ -11,6 +11,7 @@
     <string name="notification_recording">Listening…</string>
     <string name="notification_transcribing">Transcribing…</string>
     <string name="notification_copied">Copied to clipboard</string>
+    <string name="notification_inserted">Inserted into the text field</string>
     <string name="notification_nothing_heard">No speech detected</string>
     <string name="notification_failed">Dictation failed</string>
     <string name="action_stop">Stop</string>
@@ -50,4 +51,58 @@
     <string name="licenses_app_copyright" translatable="false">Copyright 2026 The Voicemator Authors</string>
     <string name="licenses_app_url" translatable="false">https://github.com/jakub-m-arch/voicemator</string>
     <string name="button_back">Back</string>
+
+    <string name="tab_history">History</string>
+    <string name="tab_statistics">Statistics</string>
+    <string name="tab_settings">Settings</string>
+
+    <string name="history_title">History</string>
+    <string name="history_empty">Your dictations will appear here.</string>
+    <string name="history_disabled">History is off. New dictations are not saved.</string>
+    <string name="history_today">Today</string>
+    <string name="history_yesterday">Yesterday</string>
+    <string name="history_copy">Copy</string>
+    <string name="history_delete">Delete</string>
+    <string name="history_settings_title">History</string>
+    <string name="history_settings_body">Keeps your dictations on this device for the History and Statistics tabs. Nothing is sent anywhere.</string>
+    <string name="history_settings_switch">Save dictations</string>
+    <string name="history_clear">Clear history</string>
+    <string name="history_clear_confirm_title">Clear history?</string>
+    <string name="history_clear_confirm_body">All saved dictations and the statistics based on them will be deleted. This cannot be undone.</string>
+
+    <string name="stats_title">Statistics</string>
+    <string name="stats_empty">Statistics appear once you have dictated something with history turned on.</string>
+    <string name="stats_words_today">Words today</string>
+    <string name="stats_total_words">Words in total</string>
+    <string name="stats_time_saved">Time saved</string>
+    <string name="stats_pace">Speaking pace</string>
+    <string name="stats_pace_value">%1$d wpm</string>
+    <string name="stats_streak">Streak</string>
+    <string name="stats_last_days">Last 14 days</string>
+    <string name="stats_activity">Activity</string>
+    <string name="stats_less">Less</string>
+    <string name="stats_more">More</string>
+    <string name="stats_tap_hint">Tap a day for details.</string>
+    <string name="stats_time_saved_note">Estimate: typing on a phone at about %1$d words a minute, minus the time spent speaking.</string>
+    <string name="stats_minutes">%1$d min</string>
+    <string name="stats_hours_minutes">%1$d h %2$d min</string>
+    <string name="stats_day_detail">%1$s: %2$s</string>
+    <plurals name="stats_words">
+        <item quantity="one">%1$s word</item>
+        <item quantity="other">%1$s words</item>
+    </plurals>
+    <plurals name="stats_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <plurals name="stats_dictations">
+        <item quantity="one">%1$s dictation</item>
+        <item quantity="other">%1$s dictations</item>
+    </plurals>
+
+    <string name="accessibility_label">Voicemator dictation</string>
+    <string name="accessibility_summary">Floating button to dictate, and text typed straight into the field you are editing.</string>
+    <string name="accessibility_description">Adds a floating accessibility button that starts and stops dictation, and pastes the transcription into the text field you are editing. To find that field, Voicemator looks at the screen only at the moment it inserts text. Speech is transcribed on this device; nothing is sent anywhere or stored outside the app.</string>
+    <string name="setup_accessibility_title">Floating button and typing into fields (optional)</string>
+    <string name="setup_accessibility_body">Turn on Voicemator in Accessibility settings and choose the floating accessibility button as its shortcut. Tap the button to dictate; the text goes straight into the field you are editing. Android will warn that the app can see the screen: Voicemator only uses this to find the focused field when inserting text.</string>
 </resources>

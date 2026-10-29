@@ -3,7 +3,9 @@
 On-device dictation for Android, one tap away in Quick Settings.
 
 Pull down the notification shade, tap **Dictate**, speak, tap it again. The transcription is
-copied to your clipboard, ready to paste into any app. Speech never leaves your phone.
+copied to your clipboard, ready to paste into any app. Or turn on the optional floating button:
+tap it while typing anywhere, speak, tap again, and the text appears right in the field. Speech
+never leaves your phone.
 
 Voicemator is inspired by [VoiceInk](https://github.com/Beingpax/VoiceInk) for macOS. It uses
 [Parakeet Ultra](https://huggingface.co/moondream/parakeet-ultra) by Moondream,
@@ -16,6 +18,8 @@ Hugging Face user leogaudin.
 ## Features
 
 - Quick Settings tile that starts and stops dictation from anywhere
+- Optional floating accessibility button that toggles dictation and types the text straight
+  into the field you are editing
 - Fully offline transcription after a one-time model download (~670 MB)
 - Long dictations are transcribed in the background while you speak, so the text is ready right
   after you stop
@@ -23,6 +27,9 @@ Hugging Face user leogaudin.
 - Optional recording indicator: a pill around the camera with a live waveform, like VoiceInk's
   notch; tap it to stop
 - Stop or cancel from the ongoing notification
+- History of your dictations, kept on the device; it can be turned off and cleared
+- Statistics: words today and in total, a streak, speaking pace, an estimate of the time saved
+  compared with typing, words per day for the last two weeks and a six-month activity heatmap
 
 ## Requirements
 
@@ -88,14 +95,18 @@ then run:
 
 1. Open Voicemator and grant microphone and notification access. Optionally allow it to display
    over other apps to get the recording indicator.
-2. Download the speech model.
-3. Add the **Dictate** tile to Quick Settings.
-4. Tap the tile, speak, and tap it again. Paste the text wherever you need it.
+2. Optionally turn on **Voicemator dictation** under Settings → Accessibility and pick the
+   floating accessibility button as its shortcut, to dictate straight into text fields.
+3. Download the speech model.
+4. Add the **Dictate** tile to Quick Settings.
+5. Tap the tile or the floating button, speak, and tap it again. With the accessibility service
+   on, the text is typed into the focused field; otherwise paste it from the clipboard.
 
 ## How it works
 
 | Component | Role |
 |---|---|
+| `DictationAccessibilityService` | Optional: the floating button, and pasting results into the focused field |
 | `DictationTileService` | Quick Settings tile that reflects and toggles the dictation state |
 | `DictationTriggerActivity` | Invisible activity that starts recording; Android only allows microphone access from services started while the app is in the foreground |
 | `DictationService` | Foreground service that records, transcribes and copies the result |
@@ -104,6 +115,8 @@ then run:
 | `ChunkedTranscription` | Transcribes finished parts of the recording while you keep talking |
 | `RecordingSegmenter` | Cuts long recordings at a pause after about 20 seconds |
 | `SpeechTranscriber` | Wraps the sherpa-onnx offline recognizer |
+| `HistoryRepository` | Saves dictations in a local Room database, unless history is turned off |
+| `UsageStatistics` | Derives the numbers, the daily chart and the heatmap from the history |
 | `ModelDownloader` | Fetches the model through the system `DownloadManager` |
 
 The model loads while you speak, which hides most of its startup time. Recording never stops on
@@ -115,9 +128,19 @@ transcribe. The model is released when dictation finishes to keep memory free.
 ## Privacy
 
 Voicemator has no analytics, accounts or servers. Audio is recorded into memory, transcribed on
-the device and discarded; only the text is placed on the clipboard. The app connects to the
+the device and discarded; only the text is placed on the clipboard. With history on (the
+default), the text is also saved in the app's private storage on the device, excluded from
+backups; turn it off or clear it under Settings. The app connects to the
 internet once, to download the speech model from Hugging Face, which sees the request like any
 other download.
+
+### Accessibility service
+
+The accessibility service is optional and off until you enable it. It does two things: it
+receives clicks on the system accessibility button, and when a dictation finishes it looks up the
+focused text field and pastes the transcription into it. It does not observe what you do; it reads
+the screen only at that moment, skips password fields, and has no other way to send data
+anywhere, as the app's only network use is downloading the model.
 
 ## License
 
