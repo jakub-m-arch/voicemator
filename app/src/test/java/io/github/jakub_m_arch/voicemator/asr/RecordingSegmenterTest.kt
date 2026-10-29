@@ -13,7 +13,7 @@ class RecordingSegmenterTest {
     @Test
     fun keepsShortRecordingInOnePiece() {
         val segmenter = RecordingSegmenter(SAMPLE_RATE)
-        val audio = tone(seconds = 15.0)
+        val audio = tone(seconds = 14.0)
 
         assertTrue(segmenter.append(audio).isEmpty())
         assertArrayEquals(audio, segmenter.flush(), 0f)
@@ -23,13 +23,13 @@ class RecordingSegmenterTest {
     @Test
     fun cutsLongRecordingAtThePause() {
         val segmenter = RecordingSegmenter(SAMPLE_RATE)
-        val audio = tone(seconds = 23.0) + FloatArray(SAMPLE_RATE / 2) + tone(seconds = 10.0)
+        val audio = tone(seconds = 12.0) + FloatArray(SAMPLE_RATE / 2) + tone(seconds = 5.0)
 
         val chunks = feedInPieces(segmenter, audio)
 
         assertEquals(1, chunks.size)
         val cutSeconds = chunks.single().size / SAMPLE_RATE.toDouble()
-        assertTrue("cut at $cutSeconds s", cutSeconds in 23.0..23.5)
+        assertTrue("cut at $cutSeconds s", cutSeconds in 12.0..12.5)
     }
 
     @Test
@@ -42,6 +42,19 @@ class RecordingSegmenterTest {
         assertTrue(chunks.size > 1)
         chunks.dropLast(1).forEach { assertTrue(it.size in 2 * SAMPLE_RATE..3 * SAMPLE_RATE) }
         assertArrayEquals(audio, chunks.reduce(FloatArray::plus), 0f)
+    }
+
+    @Test
+    fun pendingAudioIsTheTailNotYetChunked() {
+        val segmenter = RecordingSegmenter(SAMPLE_RATE, minChunkSeconds = 2, searchSeconds = 1)
+        val audio = tone(seconds = 4.5)
+
+        val chunks = feedInPieces(segmenter, audio)
+        val pending = segmenter.pending()
+
+        assertEquals(audio.size, chunks.sumOf { it.size } + pending.size)
+        assertArrayEquals(audio.copyOfRange(audio.size - pending.size, audio.size), pending, 0f)
+        assertArrayEquals(pending, segmenter.flush(), 0f)
     }
 
     private fun feedInPieces(segmenter: RecordingSegmenter, audio: FloatArray): List<FloatArray> {

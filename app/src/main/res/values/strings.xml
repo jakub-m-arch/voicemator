@@ -132,4 +132,8 @@
     <string name="history_keep_texts">Keep them</string>
     <string name="history_remove_texts_confirm_title">Remove all saved texts?</string>
     <string name="history_remove_texts_confirm_body">The text of every saved dictation will be deleted. Statistics stay. This cannot be undone.</string>
+
+    <string name="transcription_settings_title">Transcription</string>
+    <string name="transcription_final_pass">Transcribe the whole recording again at the end</string>
+    <string name="transcription_final_pass_body">After you stop, the whole recording is transcribed once more as one piece, so punctuation and sentences run naturally across it; the live preview stays as it is. Longer dictations take a few more seconds to finish. Recordings over %1$d minutes always use the faster method.</string>
 </resources>

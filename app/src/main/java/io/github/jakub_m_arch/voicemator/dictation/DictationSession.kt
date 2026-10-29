@@ -33,10 +33,19 @@ class DictationSession(context: Context, private val scope: CoroutineScope) {
     private val transcriber: Deferred<SpeechTranscriber> = scope.async(Dispatchers.Default) {
         SpeechTranscriber.load(ModelStorage(appContext)).also { loadedTranscriber = it }
     }
-    private val transcription = ChunkedTranscription(scope, transcriber, SpeechTranscriber.SAMPLE_RATE, MIN_SAMPLES)
+    private val transcription = ChunkedTranscription(
+        scope = scope,
+        transcriber = transcriber,
+        sampleRate = SpeechTranscriber.SAMPLE_RATE,
+        minSamples = MIN_SAMPLES,
+        finalPass = TranscriptionSettings.get(appContext).finalPass.value,
+    )
 
     /** Loudness of the microphone, from 0 to 1. */
     val level: StateFlow<Float> = recorder.level
+
+    /** The text recognised so far, refreshed about once a second while recording. */
+    val preview: StateFlow<String> = transcription.preview
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     fun start() = recorder.start(scope, transcription::append)

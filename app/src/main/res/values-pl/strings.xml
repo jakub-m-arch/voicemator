@@ -134,4 +134,8 @@
     <string name="history_keep_texts">Zostaw</string>
     <string name="history_remove_texts_confirm_title">Usunąć wszystkie zapisane teksty?</string>
     <string name="history_remove_texts_confirm_body">Treść wszystkich zapisanych dyktowań zostanie usunięta. Statystyki zostaną. Tego nie da się cofnąć.</string>
+
+    <string name="transcription_settings_title">Przepisywanie</string>
+    <string name="transcription_final_pass">Na końcu przepisz całe nagranie jeszcze raz</string>
+    <string name="transcription_final_pass_body">Po zatrzymaniu całe nagranie jest przepisywane jeszcze raz w jednym kawałku, więc interpunkcja i zdania układają się naturalnie w całym tekście; podgląd na żywo działa jak dotąd. Dłuższe dyktowania kończą się wtedy kilka sekund później. Nagrania dłuższe niż %1$d minuty zawsze używają szybszego sposobu.</string>
 </resources>

@@ -48,10 +48,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.jakub_m_arch.voicemator.R
 import io.github.jakub_m_arch.voicemator.accessibility.DictationAccessibilityService
 import io.github.jakub_m_arch.voicemator.accessibility.KeyboardButtonSettings
+import io.github.jakub_m_arch.voicemator.asr.ChunkedTranscription
 import io.github.jakub_m_arch.voicemator.dictation.DictationRequirements
 import io.github.jakub_m_arch.voicemator.dictation.DictationService
 import io.github.jakub_m_arch.voicemator.dictation.DictationState
 import io.github.jakub_m_arch.voicemator.dictation.DictationTileService
+import io.github.jakub_m_arch.voicemator.dictation.TranscriptionSettings
 import io.github.jakub_m_arch.voicemator.history.HistorySettingsCard
 import io.github.jakub_m_arch.voicemator.ime.VoiceInputMethodService
 import io.github.jakub_m_arch.voicemator.licenses.LicensesActivity
@@ -179,10 +181,36 @@ fun SetupScreen(contentPadding: PaddingValues, viewModel: SetupViewModel = viewM
             onStop = { context.startService(DictationService.stopIntent(context)) },
         )
 
+        TranscriptionSettingsCard()
+
         HistorySettingsCard()
 
         TextButton(onClick = { context.startActivity(Intent(context, LicensesActivity::class.java)) }) {
             Text(stringResource(R.string.licenses_title))
+        }
+    }
+}
+
+@Composable
+private fun TranscriptionSettingsCard() {
+    val settings = TranscriptionSettings.get(LocalContext.current)
+    val finalPass by settings.finalPass.collectAsStateWithLifecycle()
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.transcription_settings_title), style = MaterialTheme.typography.titleMedium)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.transcription_final_pass),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(checked = finalPass, onCheckedChange = settings::setFinalPass)
+            }
+            Text(
+                stringResource(R.string.transcription_final_pass_body, ChunkedTranscription.MAX_FINAL_PASS_SECONDS / 60),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

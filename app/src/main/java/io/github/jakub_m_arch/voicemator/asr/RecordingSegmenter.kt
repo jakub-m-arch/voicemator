@@ -2,6 +2,8 @@ package io.github.jakub_m_arch.voicemator.asr
 
 /**
  * Splits a growing recording into chunks that can be transcribed while the user keeps talking.
+ * Chunks are kept short enough that a live preview of the current one can be refreshed every
+ * second or so on a phone.
  *
  * Once more than [minChunkSeconds] + [searchSeconds] of audio is pending, a chunk is cut at the
  * quietest moment between [minChunkSeconds] and that limit, which is almost always a pause
@@ -9,8 +11,8 @@ package io.github.jakub_m_arch.voicemator.asr
  */
 class RecordingSegmenter(
     private val sampleRate: Int,
-    minChunkSeconds: Int = 20,
-    searchSeconds: Int = 8,
+    minChunkSeconds: Int = 10,
+    searchSeconds: Int = 5,
 ) {
     private val minChunkSamples = minChunkSeconds * sampleRate
     private val maxChunkSamples = (minChunkSeconds + searchSeconds) * sampleRate
@@ -34,6 +36,9 @@ class RecordingSegmenter(
         }
         return chunks
     }
+
+    /** Audio not yet returned as a chunk, for a live preview; it stays pending. */
+    fun pending(): FloatArray = pending.copyOf(pendingSize)
 
     /** Returns the remaining audio, or null if there is none. */
     fun flush(): FloatArray? {

@@ -82,7 +82,10 @@ class DictationService : Service() {
         }
         DictationStatus.publish(this, DictationState.Recording)
         overlay.show()
-        levelUpdates = scope.launch { session.level.collect(overlay::pushLevel) }
+        levelUpdates = scope.launch {
+            launch { session.level.collect(overlay::pushLevel) }
+            launch { session.preview.collect(overlay::showPreview) }
+        }
     }
 
     private fun stopRecording() {

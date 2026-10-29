@@ -20,7 +20,8 @@ import kotlin.coroutines.cancellation.CancellationException
 /**
  * A voice input method: keyboards with a mic key that hands over to the system's voice input
  * (such as FUTO Keyboard with its built-in voice input turned off) open this panel. Dictation
- * starts right away; stopping types the text into the field and returns to the keyboard.
+ * starts right away and the text appears in the field as composing text while the user speaks;
+ * stopping commits it and returns to the keyboard.
  *
  * It records in its own process rather than through `DictationService`: an input method may use
  * the microphone while it is shown, but may not start a microphone foreground service.
@@ -30,6 +31,9 @@ class VoiceInputMethodService : InputMethodService() {
     private var panel: VoiceInputPanel? = null
     private var scope: CoroutineScope? = null
     private var session: DictationSession? = null
+
+    /** Space to put before the dictated text, decided before any of it is shown. */
+    private var separator = ""
 
     override fun onCreate() {
         super.onCreate()
@@ -86,8 +90,14 @@ class VoiceInputMethodService : InputMethodService() {
         }
         this.scope = scope
         this.session = session
+        separator = separatorBeforeCursor()
         updateState(DictationState.Recording)
         scope.launch { session.level.collect { panel?.pushLevel(it) } }
+        scope.launch {
+            session.preview.collect { preview ->
+                if (preview.isNotEmpty()) currentInputConnection?.setComposingText(separator + preview, 1)
+            }
+        }
     }
 
     private fun stop() {
@@ -105,7 +115,12 @@ class VoiceInputMethodService : InputMethodService() {
                 ""
             }
             end()
-            if (text.isNotEmpty()) insertText(text)
+            if (text.isNotEmpty()) {
+                // Replaces the preview with the final text.
+                currentInputConnection?.commitText(separator + text, 1)
+            } else {
+                clearPreview()
+            }
             returnToKeyboard()
         }
     }
@@ -120,6 +135,7 @@ class VoiceInputMethodService : InputMethodService() {
         val session = session ?: return
         val scope = scope ?: return
         this.session = null
+        clearPreview()
         scope.launch {
             session.cancel()
             session.close()
@@ -137,12 +153,21 @@ class VoiceInputMethodService : InputMethodService() {
         updateState(DictationState.Idle)
     }
 
-    /** Types [text] at the cursor, with a space before it when it would touch the previous word. */
+    /** Types [text] at the cursor, as a finished dictation would. */
     internal fun insertText(text: String) {
+        currentInputConnection?.commitText(separatorBeforeCursor() + text, 1)
+    }
+
+    /** A space when the text would otherwise touch the word before the cursor. */
+    private fun separatorBeforeCursor(): String {
+        val previous = currentInputConnection?.getTextBeforeCursor(1, 0)
+        return if (!previous.isNullOrEmpty() && !previous.last().isWhitespace()) " " else ""
+    }
+
+    private fun clearPreview() {
         val connection = currentInputConnection ?: return
-        val previous = connection.getTextBeforeCursor(1, 0)
-        val separator = if (!previous.isNullOrEmpty() && !previous.last().isWhitespace()) " " else ""
-        connection.commitText(separator + text, 1)
+        connection.setComposingText("", 1)
+        connection.finishComposingText()
     }
 
     private fun updateState(state: DictationState) {

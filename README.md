@@ -26,8 +26,12 @@ Hugging Face user leogaudin.
 - Voice input method for keyboards with a voice key, such as FUTO Keyboard: the mic key opens
   Voicemator, and stopping types the text and returns to the keyboard
 - Fully offline transcription after a one-time model download (~670 MB)
+- Live preview while you speak: the text appears in the field through the voice input method,
+  or in a caption under the recording pill
 - Long dictations are transcribed in the background while you speak, so the text is ready right
   after you stop
+- Optional final pass: after you stop, the whole recording (up to three minutes) is transcribed
+  again as one piece, for the most natural punctuation at the cost of a few seconds
 - Result copied to the clipboard, with a notification showing the text
 - Optional recording indicator: a pill around the camera with a live waveform, like VoiceInk's
   notch; tap it to stop
@@ -84,8 +88,9 @@ the base64 value) to build a signed release with `./gradlew assembleRelease`.
 
 `SpeechTranscriberTest` transcribes a short Polish recording from the
 [FLEURS](https://huggingface.co/datasets/google/fleurs) dataset on a device or emulator, both as is
-and repeated into a 36-second recording that is transcribed in chunks. Unit tests cover the
-recording segmenter and the pill layout:
+and repeated into a 36-second recording that is transcribed in chunks, with a live preview that
+must grow while the audio arrives, and with the final pass. Unit tests cover the recording segmenter, the statistics, the
+pill layout and the caption:
 
 ```bash
 ./gradlew testDebugUnitTest
@@ -128,17 +133,20 @@ then run:
 | `RecordingOverlay` | Draws the recording pill (`RecordingPillView`) around the camera cutout |
 | `AudioRecorder` | Captures 16 kHz mono audio into memory |
 | `ChunkedTranscription` | Transcribes finished parts of the recording while you keep talking |
-| `RecordingSegmenter` | Cuts long recordings at a pause after about 20 seconds |
+| `RecordingSegmenter` | Cuts long recordings at a pause after about 10 seconds |
 | `SpeechTranscriber` | Wraps the sherpa-onnx offline recognizer |
 | `HistoryRepository` | Saves dictations in a local Room database, with or without their text, as the history mode says |
 | `UsageStatistics` | Derives the numbers, the daily chart and the heatmap from the history |
 | `ModelDownloader` | Fetches the model through the system `DownloadManager` |
 
 The model loads while you speak, which hides most of its startup time. Recording never stops on
-its own: dictation lasts until you tap the tile, the pill or Stop in the notification. Once a
-recording passes about 20 seconds, it is cut at the quietest moment within the next few seconds,
-and that part is transcribed in the background; when you stop, only the last part is left to
-transcribe. The model is released when dictation finishes to keep memory free.
+its own: dictation lasts until you stop it. Once a recording passes about 10 seconds, it is cut
+at the quietest moment within the next few seconds, and that part is transcribed in the
+background; when you stop, only the last part is left to transcribe. In between, the part still
+being recorded is transcribed about once a second for the live preview. With the final pass
+turned on in Settings, the whole recording is transcribed once more after you stop and that text
+is used instead; recordings over three minutes skip it. The model is released when dictation
+finishes to keep memory free.
 
 ## Privacy
 
