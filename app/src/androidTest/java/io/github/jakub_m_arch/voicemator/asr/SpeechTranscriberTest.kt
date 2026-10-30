@@ -80,13 +80,12 @@ class SpeechTranscriberTest {
             transcriber = transcriber,
             sampleRate = SpeechTranscriber.SAMPLE_RATE,
             minSamples = 1,
-            finalPass = true,
         )
         recording.toList().chunked(SpeechTranscriber.SAMPLE_RATE / 20).forEach {
             transcription.append(it.toFloatArray(), it.size)
         }
         val startedAt = SystemClock.elapsedRealtime()
-        val text = transcription.finish()
+        val text = transcription.finish(finalPass = true)
         val finishMillis = SystemClock.elapsedRealtime() - startedAt
         transcriber.await().close()
         Log.i(TAG, "Final pass in $finishMillis ms: $text")
