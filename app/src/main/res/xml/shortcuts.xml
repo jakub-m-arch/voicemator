@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Long-pressing the app icon offers dictation; it toggles, like the tile. -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutId="dictate"
+        android:shortcutLongLabel="@string/shortcut_dictate_long"
+        android:shortcutShortLabel="@string/tile_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="io.github.jakub_m_arch.voicemator.dictation.DictationTriggerActivity"
+            android:targetPackage="io.github.jakub_m_arch.voicemator" />
+    </shortcut>
+</shortcuts>

@@ -34,6 +34,7 @@ class DictationService : Service() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private lateinit var notifications: DictationNotifications
     private lateinit var overlay: RecordingOverlay
+    private lateinit var feedback: DictationFeedback
     private var session: DictationSession? = null
     private var levelUpdates: Job? = null
 
@@ -41,6 +42,7 @@ class DictationService : Service() {
         super.onCreate()
         notifications = DictationNotifications(this).apply { createChannels() }
         overlay = RecordingOverlay(this, onTap = ::stopRecording)
+        feedback = DictationFeedback(this)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -72,7 +74,7 @@ class DictationService : Service() {
         )
         if (DictationStatus.state.value != DictationState.Idle) return
 
-        val session = DictationSession(this, scope)
+        val session = DictationSession(this, scope, targetApp = DictationAccessibilityService::focusedApp)
         this.session = session
         try {
             session.start()
@@ -81,6 +83,7 @@ class DictationService : Service() {
             return
         }
         DictationStatus.publish(this, DictationState.Recording)
+        feedback.started()
         overlay.show()
         levelUpdates = scope.launch {
             launch { session.level.collect(overlay::pushLevel) }
@@ -92,6 +95,7 @@ class DictationService : Service() {
         val session = session ?: return
         if (DictationStatus.state.value != DictationState.Recording) return
         DictationStatus.publish(this, DictationState.Transcribing)
+        feedback.stopped()
         notifications.update(notifications.transcribing())
         levelUpdates?.cancel()
         overlay.showTranscribing()
@@ -121,6 +125,7 @@ class DictationService : Service() {
     private fun cancelRecording() {
         val session = session ?: return
         if (DictationStatus.state.value != DictationState.Recording) return
+        feedback.stopped()
         scope.launch {
             session.cancel()
             finishWith {}

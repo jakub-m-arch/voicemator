@@ -42,4 +42,25 @@ class TextPostProcessorTest {
 
         assertEquals("Dzwoniła dr Anna Nowak. Okej, Anna wie.", processor.process("Dzwoniła Ania Nowak. Ok, ania wie."))
     }
+
+    @Test
+    fun chatStyleDropsTheFinalFullStopAndCapital() {
+        val chat = TextPostProcessor(emptyList(), removeFillers = false, style = TextStyle(capitalizeFirst = false, endWithPeriod = false))
+
+        assertEquals("będę o piątej. Kupić coś?", chat.process("Będę o piątej. Kupić coś?"))
+        assertEquals("ok, widzimy się jutro", chat.process("Ok, widzimy się jutro."))
+        assertEquals("no i co teraz...", chat.process("No i co teraz..."))
+    }
+
+    @Test
+    fun chatStyleKeepsAcronymsAndNamesFromTheDictionary() {
+        val chat = TextPostProcessor(
+            listOf(Replacement("voice mator", "Voicemator")),
+            removeFillers = false,
+            style = TextStyle(capitalizeFirst = false, endWithPeriod = false),
+        )
+
+        assertEquals("PKP znowu się spóźnia", chat.process("PKP znowu się spóźnia."))
+        assertEquals("Voicemator działa", chat.process("Voice mator działa."))
+    }
 }

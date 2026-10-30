@@ -30,7 +30,8 @@ import kotlinx.coroutines.launch
  * - pasting finished transcriptions into the focused text field instead of only copying them.
  *
  * It watches window changes only to know whether a keyboard is open, and reads window content
- * only to find the focused field when inserting text.
+ * only to find the focused field: when inserting text, and to tell which app a dictation is for,
+ * so that app's profile applies.
  */
 class DictationAccessibilityService : AccessibilityService() {
 
@@ -98,9 +99,18 @@ class DictationAccessibilityService : AccessibilityService() {
         return field.performAction(AccessibilityNodeInfo.ACTION_PASTE)
     }
 
+    /** Package name of the app whose editable field has focus, or null if there is none. */
+    private fun focusedApp(): String? {
+        val field = findFocus(AccessibilityNodeInfo.FOCUS_INPUT) ?: return null
+        return field.packageName?.toString()?.takeIf { field.isEditable }
+    }
+
     companion object {
         @Volatile
         private var instance: DictationAccessibilityService? = null
+
+        /** The app with a focused text field, as far as the service can tell; null when it is off. */
+        fun focusedApp(): String? = instance?.focusedApp()
 
         /**
          * Pastes the current clipboard into the focused text field of whatever app is in front.

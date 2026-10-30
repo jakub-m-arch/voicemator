@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakub_m_arch.voicemator.dictation.DictationState
 import io.github.jakub_m_arch.voicemator.dictation.DictationStatus
+import io.github.jakub_m_arch.voicemator.model.DownloadSettings
 import io.github.jakub_m_arch.voicemator.model.ModelDownloader
 import io.github.jakub_m_arch.voicemator.model.ModelState
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +20,13 @@ import kotlinx.coroutines.withContext
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val downloader = ModelDownloader(application)
+    private val downloadSettings = DownloadSettings.get(application)
     private val mutableModelState = MutableStateFlow<ModelState>(ModelState.NotInstalled)
     private var pollingJob: Job? = null
 
     val modelState: StateFlow<ModelState> = mutableModelState.asStateFlow()
     val dictationState: StateFlow<DictationState> = DictationStatus.state
+    val wifiOnly: StateFlow<Boolean> = downloadSettings.wifiOnly
 
     fun refreshModelState() {
         if (pollingJob?.isActive == true) return
@@ -48,6 +51,30 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         pollingJob?.cancel()
         viewModelScope.launch {
             withContext(Dispatchers.IO) { downloader.cancel() }
+            refreshModelState()
+        }
+    }
+
+    /** Changes the network rule; a running download starts over under the new one. */
+    fun setWifiOnly(enabled: Boolean) {
+        downloadSettings.setWifiOnly(enabled)
+        if (modelState.value !is ModelState.Downloading) return
+        pollingJob?.cancel()
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                downloader.cancel()
+                downloader.start()
+            }
+            refreshModelState()
+        }
+    }
+
+    /** Deletes the model to free space; not while it is in use. */
+    fun deleteModel() {
+        if (dictationState.value != DictationState.Idle) return
+        pollingJob?.cancel()
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { downloader.delete() }
             refreshModelState()
         }
     }

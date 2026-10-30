@@ -4,11 +4,21 @@ package io.github.jakub_m_arch.voicemator.text
 data class Replacement(val heard: String, val written: String)
 
 /**
- * Cleans up a transcription: removes hesitation sounds such as "yyy" or "um" and applies the
- * user's dictionary. Matching ignores case and only takes whole words, so "Ania" does not change
- * "Aniak".
+ * How a whole dictation begins and ends. Chat messages often start with a small letter and have
+ * no full stop at the end; emails keep both.
  */
-class TextPostProcessor(replacements: List<Replacement>, private val removeFillers: Boolean) {
+data class TextStyle(val capitalizeFirst: Boolean = true, val endWithPeriod: Boolean = true)
+
+/**
+ * Cleans up a transcription: removes hesitation sounds such as "yyy" or "um", applies the
+ * user's dictionary and then the [style]. Matching ignores case and only takes whole words, so
+ * "Ania" does not change "Aniak".
+ */
+class TextPostProcessor(
+    replacements: List<Replacement>,
+    private val removeFillers: Boolean,
+    private val style: TextStyle = TextStyle(),
+) {
 
     private val rules = replacements
         .filter { it.heard.isNotBlank() }
@@ -23,7 +33,18 @@ class TextPostProcessor(replacements: List<Replacement>, private val removeFille
             val source = result
             result = pattern.replace(source) { match -> atSentenceStart(source, match.range.first, written) }
         }
+        if (!style.endWithPeriod) result = result.replace(FINAL_PERIOD, "")
+        if (!style.capitalizeFirst) result = withSmallFirstLetter(result)
         return result
+    }
+
+    /** Lowers the first letter, unless the first word is an acronym or a name from the dictionary. */
+    private fun withSmallFirstLetter(text: String): String {
+        val firstWord = FIRST_WORD.find(text)?.value ?: return text
+        val isAcronym = firstWord.length > 1 && firstWord.all { it.isUpperCase() }
+        val isName = rules.any { (_, written) -> written.firstOrNull()?.isUpperCase() == true && text.startsWith(written) }
+        if (isAcronym || isName) return text
+        return text.replaceFirst(firstWord, firstWord.replaceFirstChar { it.lowercase() })
     }
 
     private fun withoutFillers(text: String): String {
@@ -48,6 +69,10 @@ class TextPostProcessor(replacements: List<Replacement>, private val removeFille
         val SPACE_BEFORE_PUNCTUATION = Regex("""\s+([,.!?;:])""")
         val REPEATED_SPACES = Regex("""\s{2,}""")
         val SENTENCE_START = Regex("""(?:^|(?<=[.!?]\s))\p{Ll}""")
+
+        /** A single full stop at the very end; an ellipsis stays. */
+        val FINAL_PERIOD = Regex("""(?<!\.)\.\s*$""")
+        val FIRST_WORD = Regex("""^\p{L}+""")
 
         fun wholeWords(phrase: String) =
             Regex("""(?<!$WORD_CHAR)${Regex.escape(phrase)}(?!$WORD_CHAR)""", RegexOption.IGNORE_CASE)

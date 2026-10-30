@@ -20,20 +20,29 @@ Hugging Face user leogaudin.
 ## Features
 
 - Quick Settings tile that starts and stops dictation from anywhere
+- Home screen widget and a launcher shortcut (long-press the app icon) that do the same
+- A short vibration when recording starts and a double one when it stops, and an optional beep
 - Optional mic button at the keyboard, shown only while a keyboard is open, that types the text
   straight into the field you are editing; drag it wherever suits your keyboard
 - The accessibility shortcut (for example holding both volume keys) toggles dictation too
 - Voice input method for keyboards with a voice key, such as FUTO Keyboard: the mic key opens
   Voicemator, and stopping types the text and returns to the keyboard
-- Fully offline transcription after a one-time model download (~670 MB)
+- Fully offline transcription after a one-time model download (~670 MB), over Wi-Fi only unless
+  you allow mobile data; the download is checked against pinned SHA-256 checksums, and the model
+  can be deleted in Settings to free the space
 - Live preview while you speak: the text appears in the field through the voice input method,
   or in a caption under the recording pill
 - Long dictations are transcribed in the background while you speak, so the text is ready right
   after you stop
 - Dictionary: teach it names and words it gets wrong ("voice mator" → "Voicemator")
+- App profiles, like Power Mode in VoiceInk: for example no capital letter and no full stop at
+  the end in messengers, full punctuation in email; each profile can have its own dictionary
+  entries and its own final pass setting. Voicemator knows the app when you dictate through the
+  voice input method or with the accessibility service on
 - Removes hesitation sounds such as "yyy", "eee" and "um" (can be turned off)
-- Transcribes audio files: share a voice message from WhatsApp, Messenger or a recorder app to
-  Voicemator, open a file with it, or pick one in Settings
+- Transcribes audio files of any length: share a voice message from WhatsApp, Messenger or a
+  recorder app to Voicemator, open a file with it, or pick one in Settings. The text appears as
+  it is transcribed and can be saved as TXT or as SRT subtitles, or added to the history
 - Optional final pass: after you stop, the whole recording (up to three minutes) is transcribed
   again as one piece, for the most natural punctuation at the cost of a few seconds
 - Result copied to the clipboard, with a notification showing the text

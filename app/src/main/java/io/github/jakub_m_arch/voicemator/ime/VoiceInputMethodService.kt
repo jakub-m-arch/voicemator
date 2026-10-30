@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import io.github.jakub_m_arch.voicemator.MainActivity
+import io.github.jakub_m_arch.voicemator.dictation.DictationFeedback
 import io.github.jakub_m_arch.voicemator.dictation.DictationRequirements
 import io.github.jakub_m_arch.voicemator.dictation.DictationSession
 import io.github.jakub_m_arch.voicemator.dictation.DictationState
@@ -31,12 +32,14 @@ class VoiceInputMethodService : InputMethodService() {
     private var panel: VoiceInputPanel? = null
     private var scope: CoroutineScope? = null
     private var session: DictationSession? = null
+    private lateinit var feedback: DictationFeedback
 
     /** Space to put before the dictated text, decided before any of it is shown. */
     private var separator = ""
 
     override fun onCreate() {
         super.onCreate()
+        feedback = DictationFeedback(this)
         current = this
     }
 
@@ -78,7 +81,7 @@ class VoiceInputMethodService : InputMethodService() {
             return
         }
         val scope = MainScope()
-        val session = DictationSession(this, scope)
+        val session = DictationSession(this, scope, targetApp = { currentInputEditorInfo?.packageName })
         try {
             session.start()
         } catch (e: Exception) {
@@ -92,6 +95,7 @@ class VoiceInputMethodService : InputMethodService() {
         this.session = session
         separator = separatorBeforeCursor()
         updateState(DictationState.Recording)
+        feedback.started()
         scope.launch { session.level.collect { panel?.pushLevel(it) } }
         scope.launch {
             session.preview.collect { preview ->
@@ -105,6 +109,7 @@ class VoiceInputMethodService : InputMethodService() {
         val scope = scope ?: return
         if (DictationStatus.state.value != DictationState.Recording) return
         updateState(DictationState.Transcribing)
+        feedback.stopped()
         scope.launch {
             val text = try {
                 session.finish()
@@ -126,6 +131,7 @@ class VoiceInputMethodService : InputMethodService() {
     }
 
     private fun cancel() {
+        if (session != null) feedback.stopped()
         discard()
         returnToKeyboard()
     }

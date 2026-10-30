@@ -136,7 +136,6 @@
     <string name="transcribe_file_share_label">Transcribe with Voicemator</string>
     <string name="transcribe_file_title">Transcribe recording</string>
     <string name="transcribe_file_starting">Preparing…</string>
-    <string name="transcribe_file_decoding">Reading the recording…</string>
     <string name="transcribe_file_transcribing">Transcribing… %1$d%%</string>
     <string name="transcribe_file_share">Share</string>
     <string name="transcribe_file_done">Done</string>
@@ -144,7 +143,6 @@
     <string name="transcribe_file_model_missing">The speech model is not downloaded yet. Download it in Voicemator first.</string>
     <string name="transcribe_file_no_file">No recording was shared.</string>
     <string name="transcribe_file_unsupported">This file could not be read. It may not contain audio in a format this phone can decode.</string>
-    <string name="transcribe_file_too_long">The recording is too long. Files up to %1$d minutes are supported.</string>
 
     <string name="settings_title">Settings</string>
     <string name="getting_started_title">Get started</string>
@@ -174,4 +172,76 @@
     <string name="row_version_title">Voicemator %1$s</string>
     <string name="row_version_summary">Source code on GitHub</string>
     <string name="button_dictate">Dictate</string>
+
+    <string name="section_signals">Start and stop signal</string>
+    <string name="row_vibrate_title">Vibrate</string>
+    <string name="row_vibrate_summary">One buzz when recording starts, two when it stops</string>
+    <string name="row_sound_title">Beep</string>
+    <string name="row_sound_summary">A short tone at start and stop · silent when the phone is</string>
+
+    <string name="widget_label">Dictate</string>
+    <string name="widget_description">Start and stop dictation from the home screen</string>
+    <string name="widget_recording">Stop</string>
+    <string name="shortcut_dictate_long">Start or stop dictation</string>
+
+    <string name="profiles_title">App profiles</string>
+    <string name="profiles_intro">Dictate differently depending on the app. In messengers, for example, skip the capital letter and the full stop at the end; in email, keep full punctuation. Each profile can also have its own dictionary and its own final pass setting.</string>
+    <string name="profiles_requirement">Voicemator can tell the app when you dictate with the voice input or with the accessibility service on (the mic button at the keyboard, the tile, the widget). Otherwise the general settings apply.</string>
+    <string name="profiles_new">New profile</string>
+    <string name="profiles_name">Name</string>
+    <string name="profiles_name_example">Messengers</string>
+    <string name="profiles_create">Create</string>
+    <string name="profile_section_apps">Apps</string>
+    <string name="profile_no_apps">No apps yet. The profile applies only in the apps you choose.</string>
+    <string name="profile_add_apps">Choose apps</string>
+    <string name="profile_remove_app">Remove from profile</string>
+    <string name="profile_search_apps">Search apps</string>
+    <string name="profile_app_in_other">Now in %1$s</string>
+    <string name="profile_section_text">Text</string>
+    <string name="profile_capitalize_title">Capital letter at the start</string>
+    <string name="profile_capitalize_summary">Off: “see you at 5” instead of “See you at 5”</string>
+    <string name="profile_period_title">Full stop at the end</string>
+    <string name="profile_period_summary">Question and exclamation marks always stay</string>
+    <string name="profile_final_pass_default">As in Settings</string>
+    <string name="profile_final_pass_default_body">Follows the general setting.</string>
+    <string name="profile_final_pass_on_body">The whole recording is transcribed again after you stop.</string>
+    <string name="profile_final_pass_off_body">The text transcribed while you speak is used.</string>
+    <string name="profile_dictionary_empty">Words only for these apps</string>
+    <string name="profile_summary_small_letter">small first letter</string>
+    <string name="profile_summary_no_period">no full stop</string>
+    <string name="profile_summary_final_pass_on">final pass</string>
+    <string name="profile_summary_final_pass_off">no final pass</string>
+    <string name="profile_delete_confirm_title">Delete this profile?</string>
+    <string name="profile_delete_confirm_body">Its app list and its dictionary entries will be deleted. Dictations in these apps will follow the general settings again.</string>
+    <plurals name="profile_apps">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d apps</item>
+    </plurals>
+    <string name="row_profiles_empty">Different style for messengers and email</string>
+    <plurals name="row_profiles_count">
+        <item quantity="one">%1$d profile</item>
+        <item quantity="other">%1$d profiles</item>
+    </plurals>
+    <string name="dictionary_title_profile">Dictionary · %1$s</string>
+    <string name="dictionary_intro_profile">These entries apply only in this profile\'s apps, on top of the general dictionary. Whenever Voicemator hears the first form as a whole word or phrase, it writes the second.</string>
+
+    <string name="transcribe_file_transcribing_unknown">Transcribing…</string>
+    <string name="transcribe_file_save_txt">Save as TXT</string>
+    <string name="transcribe_file_save_srt">Save as SRT</string>
+    <string name="transcribe_file_save_to_history">Add to history</string>
+    <string name="transcribe_file_saved_to_history">Added to history</string>
+    <string name="transcribe_file_saved">Saved</string>
+    <string name="transcribe_file_save_failed">Could not save the file</string>
+
+    <string name="model_name" translatable="false">Parakeet Ultra</string>
+    <string name="model_installed">Downloaded and verified · %1$d MB</string>
+    <string name="model_not_installed">Not downloaded</string>
+    <string name="model_waiting_for_wifi">Waiting for Wi-Fi… %1$d%%</string>
+    <string name="model_waiting_for_network">Waiting for a connection… %1$d%%</string>
+    <string name="row_wifi_only_title">Download over Wi-Fi only</string>
+    <string name="row_wifi_only_summary">Waits for Wi-Fi instead of using mobile data</string>
+    <string name="row_delete_model_title">Delete speech model</string>
+    <string name="row_delete_model_summary">Frees about %1$d MB</string>
+    <string name="delete_model_confirm_title">Delete the speech model?</string>
+    <string name="delete_model_confirm_body">This frees about %1$d MB. Dictation and file transcription will not work until you download the model again. Your history, dictionary and profiles stay.</string>
 </resources>

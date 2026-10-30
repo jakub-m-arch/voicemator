@@ -1,5 +1,6 @@
 package io.github.jakub_m_arch.voicemator.text
 
+import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.Insert
@@ -13,6 +14,8 @@ data class DictionaryEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val heard: String,
     val written: String,
+    /** The app profile this entry belongs to, or null for one that applies everywhere. */
+    @ColumnInfo(name = "profile_id") val profileId: Long? = null,
 ) {
     fun toReplacement() = Replacement(heard, written)
 }
@@ -20,8 +23,9 @@ data class DictionaryEntry(
 @Dao
 interface DictionaryDao {
 
-    @Query("SELECT * FROM dictionary ORDER BY heard COLLATE NOCASE")
-    fun observeAll(): Flow<List<DictionaryEntry>>
+    /** Entries of one profile, or the general ones when [profileId] is null. */
+    @Query("SELECT * FROM dictionary WHERE profile_id IS :profileId ORDER BY heard COLLATE NOCASE")
+    fun observe(profileId: Long?): Flow<List<DictionaryEntry>>
 
     @Query("SELECT * FROM dictionary")
     suspend fun getAll(): List<DictionaryEntry>

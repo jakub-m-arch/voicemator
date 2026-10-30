@@ -20,23 +20,29 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
+import androidx.compose.material.icons.automirrored.outlined.VolumeUp
 import androidx.compose.material.icons.outlined.Accessibility
+import androidx.compose.material.icons.outlined.Apps
 import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.Autorenew
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.KeyboardVoice
+import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SpaceDashboard
 import androidx.compose.material.icons.outlined.TextFields
 import androidx.compose.material.icons.outlined.Toll
+import androidx.compose.material.icons.outlined.Vibration
+import androidx.compose.material.icons.outlined.Wifi
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -70,7 +76,9 @@ import io.github.jakub_m_arch.voicemator.accessibility.DictationAccessibilitySer
 import io.github.jakub_m_arch.voicemator.accessibility.KeyboardButtonSettings
 import io.github.jakub_m_arch.voicemator.asr.ChunkedTranscription
 import io.github.jakub_m_arch.voicemator.dictation.DictationRequirements
+import io.github.jakub_m_arch.voicemator.dictation.DictationState
 import io.github.jakub_m_arch.voicemator.dictation.DictationTileService
+import io.github.jakub_m_arch.voicemator.dictation.FeedbackSettings
 import io.github.jakub_m_arch.voicemator.dictation.TranscriptionSettings
 import io.github.jakub_m_arch.voicemator.files.TranscribeFileActivity
 import io.github.jakub_m_arch.voicemator.history.HistoryDatabase
@@ -78,9 +86,12 @@ import io.github.jakub_m_arch.voicemator.history.HistoryMode
 import io.github.jakub_m_arch.voicemator.history.HistoryViewModel
 import io.github.jakub_m_arch.voicemator.ime.VoiceInputMethodService
 import io.github.jakub_m_arch.voicemator.licenses.LicensesActivity
+import io.github.jakub_m_arch.voicemator.model.DownloadSettings
 import io.github.jakub_m_arch.voicemator.model.ModelState
 import io.github.jakub_m_arch.voicemator.model.ParakeetModel
 import io.github.jakub_m_arch.voicemator.overlay.RecordingOverlay
+import io.github.jakub_m_arch.voicemator.profiles.Profile
+import io.github.jakub_m_arch.voicemator.profiles.ProfilesActivity
 import io.github.jakub_m_arch.voicemator.text.DictionaryActivity
 import io.github.jakub_m_arch.voicemator.text.DictionaryEntry
 import kotlin.math.roundToInt
@@ -127,7 +138,9 @@ fun SettingsScreen(
         }
 
         WaysToDictate(permissions, onTileAdded = { permissions = permissions.copy(isTileAdded = true) })
+        Signals()
         Transcription()
+        SpeechModel(viewModel, modelState)
         HistoryAndPrivacy(historyViewModel)
         About()
     }
@@ -187,11 +200,9 @@ private fun GettingStarted(
             ChecklistRow(Icons.Outlined.Notifications, stringResource(R.string.setup_notifications_title), stringResource(R.string.setup_notifications_body), state.hasNotifications) {
                 Button(onClick = { notifications.launch(Manifest.permission.POST_NOTIFICATIONS) }) { Text(stringResource(R.string.button_grant)) }
             }
-            val megabytes = (ParakeetModel.totalSizeBytes / BYTES_PER_MEGABYTE).toInt()
             val modelSummary = when (modelState) {
-                is ModelState.Downloading -> stringResource(R.string.setup_model_downloading, (modelState.progress * 100).roundToInt())
-                ModelState.Failed -> stringResource(R.string.setup_model_failed)
-                else -> stringResource(R.string.setup_model_body, megabytes)
+                is ModelState.Downloading, ModelState.Failed -> modelStatus(modelState)
+                else -> stringResource(R.string.setup_model_body, MODEL_MEGABYTES)
             }
             ChecklistRow(Icons.Outlined.Download, stringResource(R.string.setup_model_title), modelSummary, modelState == ModelState.Installed) {
                 when (modelState) {
@@ -291,13 +302,39 @@ private fun WaysToDictate(state: SystemState, onTileAdded: () -> Unit) {
 }
 
 @Composable
+private fun Signals() {
+    val settings = FeedbackSettings.get(LocalContext.current)
+    val vibrate by settings.vibrate.collectAsStateWithLifecycle()
+    val sound by settings.sound.collectAsStateWithLifecycle()
+
+    SettingsSection(stringResource(R.string.section_signals)) {
+        SettingsSwitchRow(
+            icon = Icons.Outlined.Vibration,
+            title = stringResource(R.string.row_vibrate_title),
+            summary = stringResource(R.string.row_vibrate_summary),
+            checked = vibrate,
+            onCheckedChange = settings::setVibrate,
+        )
+        SettingsSwitchRow(
+            icon = Icons.AutoMirrored.Outlined.VolumeUp,
+            title = stringResource(R.string.row_sound_title),
+            summary = stringResource(R.string.row_sound_summary),
+            checked = sound,
+            onCheckedChange = settings::setSound,
+        )
+    }
+}
+
+@Composable
 private fun Transcription() {
     val context = LocalContext.current
     val settings = TranscriptionSettings.get(context)
     val removeFillers by settings.removeFillers.collectAsStateWithLifecycle()
     val finalPass by settings.finalPass.collectAsStateWithLifecycle()
-    val dictionary by remember { HistoryDatabase.get(context).dictionary().observeAll() }
+    val dictionary by remember { HistoryDatabase.get(context).dictionary().observe(profileId = null) }
         .collectAsStateWithLifecycle(initialValue = emptyList<DictionaryEntry>())
+    val profiles by remember { HistoryDatabase.get(context).profiles().observeAll() }
+        .collectAsStateWithLifecycle(initialValue = emptyList<Profile>())
     val pickAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) context.startActivity(TranscribeFileActivity.intent(context, uri))
     }
@@ -325,13 +362,81 @@ private fun Transcription() {
             } else {
                 pluralStringResource(R.plurals.row_dictionary_entries, dictionary.size, dictionary.size)
             },
-            onClick = { context.startActivity(Intent(context, DictionaryActivity::class.java)) },
+            onClick = { context.startActivity(DictionaryActivity.intent(context)) },
+        )
+        SettingsRow(
+            icon = Icons.Outlined.Apps,
+            title = stringResource(R.string.profiles_title),
+            summary = if (profiles.isEmpty()) {
+                stringResource(R.string.row_profiles_empty)
+            } else {
+                pluralStringResource(R.plurals.row_profiles_count, profiles.size, profiles.size)
+            },
+            onClick = { context.startActivity(Intent(context, ProfilesActivity::class.java)) },
         )
         SettingsRow(
             icon = Icons.Outlined.AudioFile,
             title = stringResource(R.string.row_transcribe_file_title),
             summary = stringResource(R.string.row_transcribe_file_summary),
             onClick = { pickAudio.launch(arrayOf("audio/*", "application/ogg")) },
+        )
+    }
+}
+
+@Composable
+private fun modelStatus(state: ModelState): String = when (state) {
+    ModelState.Installed -> stringResource(R.string.model_installed, MODEL_MEGABYTES)
+    ModelState.NotInstalled -> stringResource(R.string.model_not_installed)
+    ModelState.Failed -> stringResource(R.string.setup_model_failed)
+    is ModelState.Downloading -> if (state.isWaitingForNetwork) {
+        val wifiOnly by DownloadSettings.get(LocalContext.current).wifiOnly.collectAsStateWithLifecycle()
+        stringResource(
+            if (wifiOnly) R.string.model_waiting_for_wifi else R.string.model_waiting_for_network,
+            (state.progress * 100).roundToInt(),
+        )
+    } else {
+        stringResource(R.string.setup_model_downloading, (state.progress * 100).roundToInt())
+    }
+}
+
+@Composable
+private fun SpeechModel(viewModel: SettingsViewModel, modelState: ModelState) {
+    val wifiOnly by viewModel.wifiOnly.collectAsStateWithLifecycle()
+    val dictationState by viewModel.dictationState.collectAsStateWithLifecycle()
+    var isConfirmingDelete by rememberSaveable { mutableStateOf(false) }
+
+    SettingsSection(stringResource(R.string.setup_model_title)) {
+        SettingsRow(
+            icon = Icons.Outlined.Memory,
+            title = stringResource(R.string.model_name),
+            summary = modelStatus(modelState),
+        )
+        SettingsSwitchRow(
+            icon = Icons.Outlined.Wifi,
+            title = stringResource(R.string.row_wifi_only_title),
+            summary = stringResource(R.string.row_wifi_only_summary),
+            checked = wifiOnly,
+            onCheckedChange = viewModel::setWifiOnly,
+        )
+        if (modelState == ModelState.Installed && dictationState == DictationState.Idle) {
+            SettingsRow(
+                icon = Icons.Outlined.Delete,
+                title = stringResource(R.string.row_delete_model_title),
+                summary = stringResource(R.string.row_delete_model_summary, MODEL_MEGABYTES),
+                titleColor = MaterialTheme.colorScheme.error,
+                onClick = { isConfirmingDelete = true },
+                trailing = {},
+            )
+        }
+    }
+
+    if (isConfirmingDelete) {
+        ConfirmDialog(
+            title = stringResource(R.string.delete_model_confirm_title),
+            body = stringResource(R.string.delete_model_confirm_body, MODEL_MEGABYTES),
+            confirmLabel = stringResource(R.string.history_delete),
+            onConfirm = viewModel::deleteModel,
+            onDismiss = { isConfirmingDelete = false },
         )
     }
 }
@@ -482,3 +587,4 @@ private fun overlaySettingsIntent(context: Context): Intent =
     Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, "package:${context.packageName}".toUri())
 
 private const val BYTES_PER_MEGABYTE = 1_000_000L
+private val MODEL_MEGABYTES = (ParakeetModel.totalSizeBytes / BYTES_PER_MEGABYTE).toInt()

@@ -72,6 +72,11 @@ class ModelStorage(context: Context) {
 
     fun isInstalled(): Boolean = ParakeetModel.files.all(::isComplete)
 
+    /** Deletes the model, partial downloads included. */
+    fun delete() {
+        directory.deleteRecursively()
+    }
+
     /** Frees the space taken by models from earlier app versions. */
     fun deleteOtherModels() {
         modelsRoot.listFiles()

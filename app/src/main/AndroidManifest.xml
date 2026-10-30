@@ -7,6 +7,15 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Lets app profiles list the apps on the launcher, and nothing more. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
 
     <application
         android:allowBackup="false"
@@ -24,6 +33,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
@@ -50,11 +62,16 @@
             android:label="@string/dictionary_title" />
 
         <activity
+            android:name=".profiles.ProfilesActivity"
+            android:exported="false"
+            android:label="@string/profiles_title" />
+
+        <activity
             android:name=".licenses.LicensesActivity"
             android:exported="false"
             android:label="@string/licenses_title" />
 
-        <!-- Invisible trampoline: lets the tile start a microphone service from the foreground. -->
+        <!-- Invisible trampoline: lets the tile, widget and shortcut start a microphone service from the foreground. -->
         <activity
             android:name=".dictation.DictationTriggerActivity"
             android:excludeFromRecents="true"
@@ -62,6 +79,18 @@
             android:noHistory="true"
             android:taskAffinity=""
             android:theme="@style/Theme.Voicemator.Transparent" />
+
+        <receiver
+            android:name=".widget.DictationWidget"
+            android:exported="false"
+            android:label="@string/widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/dictation_widget" />
+        </receiver>
 
         <service
             android:name=".dictation.DictationService"

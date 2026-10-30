@@ -11,18 +11,17 @@ import java.nio.ByteOrder
 
 /**
  * Decodes the audio track of a file (Ogg Opus voice messages, M4A, MP3, WAV, AMR and whatever else
- * the device can decode) into mono float samples at [targetRate].
+ * the device can decode) into mono float samples at a target rate, a few seconds at a time, so
+ * even hours of audio never have to fit in memory at once.
  */
 class AudioFileDecoder(private val context: Context) {
 
-    class TooLongException(val maxSeconds: Int) : IOException("Audio is longer than $maxSeconds seconds")
-
     /**
-     * Decodes [uri]. [onProgress] gets a value from 0 to 1 when the duration is known. Throws
-     * [TooLongException] for audio over [maxSeconds], and [IOException] if there is no audio
-     * track the device can decode.
+     * Decodes [uri], passing audio at [targetRate] to [onAudio] block by block, in order.
+     * [onProgress] gets a value from 0 to 1 when the duration is known. Throws [IOException] if
+     * there is no audio track the device can decode.
      */
-    fun decode(uri: Uri, targetRate: Int, maxSeconds: Int, onProgress: (Float) -> Unit = {}): FloatArray {
+    fun decode(uri: Uri, targetRate: Int, onProgress: (Float) -> Unit = {}, onAudio: (FloatArray) -> Unit) {
         val extractor = MediaExtractor()
         try {
             extractor.setDataSource(context, uri, null)
@@ -32,27 +31,21 @@ class AudioFileDecoder(private val context: Context) {
             extractor.selectTrack(track)
             val format = extractor.getTrackFormat(track)
             val durationMicros = if (format.containsKey(MediaFormat.KEY_DURATION)) format.getLong(MediaFormat.KEY_DURATION) else 0L
-            if (durationMicros > maxSeconds * MICROS_PER_SECOND) throw TooLongException(maxSeconds)
-
-            val decoded = decodeTrack(extractor, format, durationMicros, maxSeconds, onProgress)
-            return Resampler.resample(decoded.samples, decoded.sampleRate, targetRate)
+            decodeTrack(extractor, format, durationMicros, MonoBlocks(targetRate, onAudio), onProgress)
         } finally {
             extractor.release()
         }
     }
 
-    private class Decoded(val samples: FloatArray, val sampleRate: Int)
-
     private fun decodeTrack(
         extractor: MediaExtractor,
         format: MediaFormat,
         durationMicros: Long,
-        maxSeconds: Int,
+        output: MonoBlocks,
         onProgress: (Float) -> Unit,
-    ): Decoded {
+    ) {
         val codec = MediaCodec.createDecoderByType(checkNotNull(format.getString(MediaFormat.KEY_MIME)))
-        val output = FloatOutput()
-        var sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+        output.sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
         var channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
         var encoding = AudioFormat.ENCODING_PCM_16BIT
         try {
@@ -80,7 +73,7 @@ class AudioFileDecoder(private val context: Context) {
                 when (val outputIndex = codec.dequeueOutputBuffer(info, TIMEOUT_MICROS)) {
                     MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
                         val outputFormat = codec.outputFormat
-                        sampleRate = outputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                        output.sampleRate = outputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE)
                         channels = outputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
                         if (outputFormat.containsKey(MediaFormat.KEY_PCM_ENCODING)) {
                             encoding = outputFormat.getInteger(MediaFormat.KEY_PCM_ENCODING)
@@ -92,7 +85,6 @@ class AudioFileDecoder(private val context: Context) {
                         buffer.limit(info.offset + info.size)
                         output.appendMono(buffer, encoding, channels)
                         codec.releaseOutputBuffer(outputIndex, false)
-                        if (output.size > maxSeconds.toLong() * sampleRate) throw TooLongException(maxSeconds)
                         if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) outputDone = true
                     }
                 }
@@ -100,15 +92,25 @@ class AudioFileDecoder(private val context: Context) {
         } finally {
             codec.release()
         }
+        output.flush()
         onProgress(1f)
-        return Decoded(output.toArray(), sampleRate)
     }
 
-    /** Collects decoded PCM, mixing all channels down to mono. */
-    private class FloatOutput {
-        private var samples = FloatArray(INITIAL_CAPACITY)
-        var size = 0
-            private set
+    /**
+     * Collects decoded PCM, mixing all channels down to mono, and hands it on resampled to
+     * [targetRate] in blocks of [BLOCK_SECONDS]. Whole-second blocks resample to an exact length,
+     * so timing does not drift over a long file.
+     */
+    private class MonoBlocks(private val targetRate: Int, private val onAudio: (FloatArray) -> Unit) {
+        private var samples = FloatArray(0)
+        private var size = 0
+
+        /** The rate of the decoded audio; changing it hands on what was collected at the old rate. */
+        var sampleRate = 0
+            set(value) {
+                if (value != field) flush()
+                field = value
+            }
 
         fun appendMono(buffer: java.nio.ByteBuffer, encoding: Int, channels: Int) {
             val frames = when (encoding) {
@@ -127,18 +129,28 @@ class AudioFileDecoder(private val context: Context) {
                     }
                 }
             }
-            if (size + frames.size > samples.size) samples = samples.copyOf(maxOf(size + frames.size, samples.size * 2))
-            frames.copyInto(samples, size)
-            size += frames.size
+            val blockSize = sampleRate * BLOCK_SECONDS
+            if (samples.size < blockSize) samples = samples.copyOf(blockSize)
+            var offset = 0
+            while (offset < frames.size) {
+                val count = minOf(frames.size - offset, blockSize - size)
+                frames.copyInto(samples, size, offset, offset + count)
+                size += count
+                offset += count
+                if (size == blockSize) flush()
+            }
         }
 
-        fun toArray(): FloatArray = samples.copyOf(size)
+        fun flush() {
+            if (size == 0) return
+            onAudio(Resampler.resample(samples.copyOf(size), sampleRate, targetRate))
+            size = 0
+        }
     }
 
     private companion object {
         const val TIMEOUT_MICROS = 10_000L
-        const val MICROS_PER_SECOND = 1_000_000L
         const val PCM16_SCALE = 32768f
-        const val INITIAL_CAPACITY = 1 shl 20
+        const val BLOCK_SECONDS = 10
     }
 }

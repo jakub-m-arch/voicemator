@@ -138,7 +138,6 @@
     <string name="transcribe_file_share_label">Przepisz w Voicematorze</string>
     <string name="transcribe_file_title">Przepisz nagranie</string>
     <string name="transcribe_file_starting">Przygotowuję…</string>
-    <string name="transcribe_file_decoding">Odczytuję nagranie…</string>
     <string name="transcribe_file_transcribing">Przepisuję… %1$d%%</string>
     <string name="transcribe_file_share">Udostępnij</string>
     <string name="transcribe_file_done">Gotowe</string>
@@ -146,7 +145,6 @@
     <string name="transcribe_file_model_missing">Model mowy nie jest jeszcze pobrany. Najpierw pobierz go w Voicematorze.</string>
     <string name="transcribe_file_no_file">Nie udostępniono żadnego nagrania.</string>
     <string name="transcribe_file_unsupported">Nie udało się odczytać tego pliku. Może nie zawierać dźwięku w formacie obsługiwanym przez ten telefon.</string>
-    <string name="transcribe_file_too_long">Nagranie jest za długie. Obsługiwane są pliki do %1$d minut.</string>
 
     <string name="settings_title">Ustawienia</string>
     <string name="getting_started_title">Pierwsze kroki</string>
@@ -178,4 +176,79 @@
     <string name="row_version_title">Voicemator %1$s</string>
     <string name="row_version_summary">Kod źródłowy na GitHubie</string>
     <string name="button_dictate">Dyktuj</string>
+
+    <string name="section_signals">Sygnał startu i końca</string>
+    <string name="row_vibrate_title">Wibracja</string>
+    <string name="row_vibrate_summary">Jedno drgnięcie na start nagrywania, dwa na koniec</string>
+    <string name="row_sound_title">Dźwięk</string>
+    <string name="row_sound_summary">Krótki ton na start i koniec · cichy, gdy telefon jest wyciszony</string>
+
+    <string name="widget_label">Dyktuj</string>
+    <string name="widget_description">Rozpoczynaj i kończ dyktowanie z ekranu głównego</string>
+    <string name="widget_recording">Zakończ</string>
+    <string name="shortcut_dictate_long">Rozpocznij lub zakończ dyktowanie</string>
+
+    <string name="profiles_title">Profile aplikacji</string>
+    <string name="profiles_intro">Dyktuj inaczej w zależności od aplikacji. Na przykład w komunikatorach bez wielkiej litery na początku i kropki na końcu, a w poczcie z pełną interpunkcją. Każdy profil może też mieć własny słownik i własne ustawienie przepisywania całości na końcu.</string>
+    <string name="profiles_requirement">Voicemator rozpoznaje aplikację, gdy dyktujesz przez wprowadzanie głosowe albo z włączoną usługą dostępności (przycisk mikrofonu przy klawiaturze, kafelek, widżet). W pozostałych przypadkach działają ustawienia ogólne.</string>
+    <string name="profiles_new">Nowy profil</string>
+    <string name="profiles_name">Nazwa</string>
+    <string name="profiles_name_example">Komunikatory</string>
+    <string name="profiles_create">Utwórz</string>
+    <string name="profile_section_apps">Aplikacje</string>
+    <string name="profile_no_apps">Brak aplikacji. Profil działa tylko w aplikacjach, które wybierzesz.</string>
+    <string name="profile_add_apps">Wybierz aplikacje</string>
+    <string name="profile_remove_app">Usuń z profilu</string>
+    <string name="profile_search_apps">Szukaj aplikacji</string>
+    <string name="profile_app_in_other">Teraz w profilu %1$s</string>
+    <string name="profile_section_text">Tekst</string>
+    <string name="profile_capitalize_title">Wielka litera na początku</string>
+    <string name="profile_capitalize_summary">Wyłączone: „będę o 5” zamiast „Będę o 5”</string>
+    <string name="profile_period_title">Kropka na końcu</string>
+    <string name="profile_period_summary">Znaki zapytania i wykrzykniki zawsze zostają</string>
+    <string name="profile_final_pass_default">Jak w ustawieniach</string>
+    <string name="profile_final_pass_default_body">Zgodnie z ustawieniem ogólnym.</string>
+    <string name="profile_final_pass_on_body">Po zakończeniu całe nagranie jest przepisywane jeszcze raz.</string>
+    <string name="profile_final_pass_off_body">Używany jest tekst przepisany w trakcie mówienia.</string>
+    <string name="profile_dictionary_empty">Słowa tylko dla tych aplikacji</string>
+    <string name="profile_summary_small_letter">mała litera na początku</string>
+    <string name="profile_summary_no_period">bez kropki</string>
+    <string name="profile_summary_final_pass_on">przepisywanie całości</string>
+    <string name="profile_summary_final_pass_off">bez przepisywania całości</string>
+    <string name="profile_delete_confirm_title">Usunąć ten profil?</string>
+    <string name="profile_delete_confirm_body">Jego lista aplikacji i wpisy w słowniku zostaną usunięte. Dyktowanie w tych aplikacjach wróci do ustawień ogólnych.</string>
+    <plurals name="profile_apps">
+        <item quantity="one">%1$d aplikacja</item>
+        <item quantity="few">%1$d aplikacje</item>
+        <item quantity="many">%1$d aplikacji</item>
+        <item quantity="other">%1$d aplikacji</item>
+    </plurals>
+    <string name="row_profiles_empty">Inny styl w komunikatorach i poczcie</string>
+    <plurals name="row_profiles_count">
+        <item quantity="one">%1$d profil</item>
+        <item quantity="few">%1$d profile</item>
+        <item quantity="many">%1$d profili</item>
+        <item quantity="other">%1$d profilu</item>
+    </plurals>
+    <string name="dictionary_title_profile">Słownik · %1$s</string>
+    <string name="dictionary_intro_profile">Te wpisy działają tylko w aplikacjach tego profilu, oprócz słownika ogólnego. Gdy Voicemator usłyszy pierwszą formę jako całe słowo lub frazę, zapisze drugą.</string>
+
+    <string name="transcribe_file_transcribing_unknown">Przepisuję…</string>
+    <string name="transcribe_file_save_txt">Zapisz jako TXT</string>
+    <string name="transcribe_file_save_srt">Zapisz jako SRT</string>
+    <string name="transcribe_file_save_to_history">Dodaj do historii</string>
+    <string name="transcribe_file_saved_to_history">Dodano do historii</string>
+    <string name="transcribe_file_saved">Zapisano</string>
+    <string name="transcribe_file_save_failed">Nie udało się zapisać pliku</string>
+
+    <string name="model_installed">Pobrany i sprawdzony · %1$d MB</string>
+    <string name="model_not_installed">Nie pobrano</string>
+    <string name="model_waiting_for_wifi">Czekam na Wi-Fi… %1$d%%</string>
+    <string name="model_waiting_for_network">Czekam na połączenie… %1$d%%</string>
+    <string name="row_wifi_only_title">Pobieraj tylko przez Wi-Fi</string>
+    <string name="row_wifi_only_summary">Czeka na Wi-Fi zamiast używać danych komórkowych</string>
+    <string name="row_delete_model_title">Usuń model mowy</string>
+    <string name="row_delete_model_summary">Zwalnia około %1$d MB</string>
+    <string name="delete_model_confirm_title">Usunąć model mowy?</string>
+    <string name="delete_model_confirm_body">Zwolni to około %1$d MB. Dyktowanie i przepisywanie plików nie będą działać, dopóki nie pobierzesz modelu ponownie. Historia, słownik i profile zostają.</string>
 </resources>

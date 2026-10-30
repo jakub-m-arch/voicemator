@@ -9,7 +9,7 @@ import io.github.jakub_m_arch.voicemator.asr.SpeechTranscriber
 import io.github.jakub_m_arch.voicemator.audio.AudioRecorder
 import io.github.jakub_m_arch.voicemator.history.HistoryRepository
 import io.github.jakub_m_arch.voicemator.model.ModelStorage
-import io.github.jakub_m_arch.voicemator.text.PostProcessing
+import io.github.jakub_m_arch.voicemator.text.DictationRules
 import io.github.jakub_m_arch.voicemator.text.TextPostProcessor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -27,12 +27,21 @@ import kotlin.coroutines.cancellation.CancellationException
  *
  * Used by [DictationService] and by the voice input method, which has to record itself because
  * Android does not let an input method start a microphone foreground service.
+ *
+ * [targetApp] names the app the text is for, when known, so its profile can shape the text. It
+ * is asked when recording starts, for the preview, and again when it stops, since that is where
+ * the text goes.
  */
-class DictationSession(context: Context, private val scope: CoroutineScope) {
+class DictationSession(
+    context: Context,
+    private val scope: CoroutineScope,
+    private val targetApp: () -> String? = { null },
+) {
 
     private val appContext = context.applicationContext
     private val recorder = AudioRecorder(SpeechTranscriber.SAMPLE_RATE)
     private var loadedTranscriber: SpeechTranscriber? = null
+    private var appAtStart: String? = null
 
     // The model loads in parallel with recording, which hides most of its loading time.
     private val transcriber: Deferred<SpeechTranscriber> = scope.async(Dispatchers.Default) {
@@ -43,30 +52,35 @@ class DictationSession(context: Context, private val scope: CoroutineScope) {
         transcriber = transcriber,
         sampleRate = SpeechTranscriber.SAMPLE_RATE,
         minSamples = MIN_SAMPLES,
-        finalPass = TranscriptionSettings.get(appContext).finalPass.value,
     )
 
     /** Loudness of the microphone, from 0 to 1. */
     val level: StateFlow<Float> = recorder.level
 
-    // The dictionary loads alongside the model; until it is ready the preview shows raw text.
-    private var loadedPostProcessor: TextPostProcessor? = null
-    private val postProcessor: Deferred<TextPostProcessor> = scope.async(Dispatchers.IO) {
-        PostProcessing.load(appContext).also { loadedPostProcessor = it }
+    // The dictionary and profiles load alongside the model; until then the preview shows raw text.
+    private var loadedRules: DictationRules? = null
+    private val rules: Deferred<DictationRules> = scope.async(Dispatchers.IO) {
+        DictationRules.load(appContext).also { loadedRules = it }
     }
+    private var previewProcessor: TextPostProcessor? = null
 
     /** The text recognised so far, refreshed about once a second while recording. */
     val preview: StateFlow<String> = transcription.preview
-        .map { text -> loadedPostProcessor?.process(text) ?: text }
+        .map { text -> previewProcessor()?.process(text) ?: text }
         .stateIn(scope, SharingStarted.Eagerly, "")
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    fun start() = recorder.start(scope, transcription::append)
+    fun start() {
+        appAtStart = targetApp()
+        recorder.start(scope, transcription::append)
+    }
 
     /** Stops recording and returns the text, saved to the history; empty if nothing was said. */
     suspend fun finish(): String {
         recorder.stop()
-        val text = postProcessor.await().process(transcription.finish())
+        val rules = rules.await()
+        val profile = rules.profileFor(targetApp() ?: appAtStart)
+        val text = rules.postProcessor(profile).process(transcription.finish(rules.finalPass(profile)))
         if (text.isNotEmpty()) saveToHistory(text, transcription.recordedMillis)
         return text
     }
@@ -79,10 +93,15 @@ class DictationSession(context: Context, private val scope: CoroutineScope) {
 
     /** Frees the speech model. Call once the session is over. */
     fun close() {
-        postProcessor.cancel()
+        rules.cancel()
         transcriber.cancel()
         loadedTranscriber?.close()
     }
+
+    private fun previewProcessor(): TextPostProcessor? =
+        previewProcessor ?: loadedRules
+            ?.let { it.postProcessor(it.profileFor(appAtStart)) }
+            ?.also { previewProcessor = it }
 
     private suspend fun saveToHistory(text: String, audioDurationMillis: Long) {
         try {

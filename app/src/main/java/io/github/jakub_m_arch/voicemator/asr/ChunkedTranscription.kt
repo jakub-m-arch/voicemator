@@ -22,10 +22,11 @@ import kotlinx.coroutines.withContext
  * about once a second to keep [preview] current. When dictation stops, [finish] only has to
  * transcribe the last chunk, so the text is ready almost immediately even after a long recording.
  *
- * With [finalPass], [finish] instead transcribes the whole recording again as one utterance, which
- * avoids seams between chunks at the cost of a few seconds' wait; recordings longer than
+ * With a final pass, [finish] instead transcribes the whole recording again as one utterance,
+ * which avoids seams between chunks at the cost of a few seconds' wait; recordings longer than
  * [MAX_FINAL_PASS_SECONDS] still use the chunks, as one pass over them would take too long and
- * too much memory on a phone.
+ * too much memory on a phone. Whether to make one is decided only when dictation stops, because
+ * an app profile may ask for it, so short recordings are always kept (at most about 11 MB).
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChunkedTranscription(
@@ -33,7 +34,6 @@ class ChunkedTranscription(
     private val transcriber: Deferred<SpeechTranscriber>,
     private val sampleRate: Int,
     private val minSamples: Int,
-    private val finalPass: Boolean = false,
     private val segmenter: RecordingSegmenter = RecordingSegmenter(sampleRate),
 ) {
     // One thread for every use of the model, so chunks and previews never decode at once.
@@ -43,7 +43,7 @@ class ChunkedTranscription(
     private val finishedTexts = mutableListOf<String>()
     private val mutablePreview = MutableStateFlow("")
 
-    /** The whole recording, kept only for the final pass and only while it is short enough. */
+    /** The whole recording, kept for a final pass while it is short enough. */
     private val recording = mutableListOf<FloatArray>()
     private val maxFinalPassSamples = MAX_FINAL_PASS_SECONDS.toLong() * sampleRate
 
@@ -82,7 +82,7 @@ class ChunkedTranscription(
         recordedSamples += count
         val ready = synchronized(segmenterLock) {
             when {
-                usesFinalPass() -> recording += samples.copyOf(count)
+                isShortEnoughForFinalPass() -> recording += samples.copyOf(count)
                 recording.isNotEmpty() -> recording.clear() // Too long now; the chunks will do.
             }
             segmenter.append(samples, count)
@@ -91,16 +91,17 @@ class ChunkedTranscription(
     }
 
     /**
-     * Transcribes the remaining audio and returns the whole text. Recordings shorter than
-     * [minSamples] are treated as accidental and return an empty string.
+     * Transcribes the remaining audio and returns the whole text, with one more pass over the whole
+     * recording if [finalPass] is set and it is short enough. Recordings shorter than [minSamples]
+     * are treated as accidental and return an empty string.
      */
-    suspend fun finish(): String {
+    suspend fun finish(finalPass: Boolean = false): String {
         previews.cancel()
         if (recordedSamples < minSamples) {
             cancel()
             return ""
         }
-        if (usesFinalPass()) {
+        if (finalPass && isShortEnoughForFinalPass()) {
             chunks.cancel()
             transcripts.cancel()
             val audio = synchronized(segmenterLock) { concatenate(recording) }
@@ -117,7 +118,7 @@ class ChunkedTranscription(
         transcripts.cancel()
     }
 
-    private fun usesFinalPass() = finalPass && recordedSamples <= maxFinalPassSamples
+    private fun isShortEnoughForFinalPass() = recordedSamples <= maxFinalPassSamples
 
     private fun joined(texts: List<String>) = texts.filter { it.isNotBlank() }.joinToString(" ")
 
