@@ -2,6 +2,8 @@
 
 On-device dictation for Android, one tap away in Quick Settings.
 
+Website: [jakub-m-arch.github.io/voicemator](https://jakub-m-arch.github.io/voicemator/)
+
 Pull down the notification shade, tap **Dictate**, speak, tap it again. The transcription is
 copied to your clipboard, ready to paste into any app. Or turn on the optional accessibility
 service: a small mic button then appears at the keyboard whenever you type; tap it, speak, tap
@@ -96,6 +98,17 @@ Release signing needs four repository secrets:
 
 Locally, set the same names (with `VOICEMATOR_KEYSTORE_FILE` pointing to the keystore instead of
 the base64 value) to build a signed release with `./gradlew assembleRelease`.
+
+## Website
+
+The website lives in [`site/`](site), with the Polish version in `site/pl/`. It is plain HTML and
+CSS with no build step. Every push to `main` that changes it runs
+[`pages.yml`](.github/workflows/pages.yml), which publishes it to GitHub Pages. To preview it
+locally:
+
+```bash
+python3 -m http.server --directory site
+```
 
 ## Testing
 
