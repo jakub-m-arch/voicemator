@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voicemator — offline dictation for Android</title>
+  <meta name="description" content="Tap, speak, and the text is in the field. Voicemator runs a speech model on your Android phone: no account, no server, 25 European languages.">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Voicemator — offline dictation for Android">
+  <meta property="og:description" content="Tap, speak, and the text is in the field. The speech model runs on your phone.">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="alternate" hreflang="pl" href="pl/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <a class="brand" href="./"><img src="icon.svg" alt="">Voicemator</a>
+    <nav>
+      <a href="#ways">How you use it</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#details">Details</a>
+      <a href="#install">Install</a>
+      <a class="lang" href="pl/" hreflang="pl" lang="pl">PL</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <h1>Speak into any text field. <em>Nothing leaves the phone.</em></h1>
+        <p class="lede">Voicemator is dictation for Android. Tap, talk, tap again, and the words are typed where your cursor is. The speech model runs on the phone itself, so it works in airplane mode and nobody else hears you.</p>
+        <div class="actions">
+          <a class="button" data-apk href="https://github.com/jakub-m-arch/voicemator/releases/latest">Download the APK <span class="mono" data-version>v0.10.0</span></a>
+          <a class="quiet" href="https://github.com/jakub-m-arch/voicemator">Source on GitHub →</a>
+        </div>
+        <ul class="facts">
+          <li>Android 14+</li>
+          <li>25 languages</li>
+          <li>no account</li>
+          <li>free, Apache 2.0</li>
+        </ul>
+      </div>
+
+      <div class="phone" data-phrase="Running ten minutes late, the tram is stuck at the roundabout. Could you order me the usual?" aria-label="A phone dictating a message into a chat app" role="img">
+        <div class="pill"><span class="dot"></span><span class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+        <div class="chat">
+          <header><span class="avatar"></span>Ola</header>
+          <div class="msgs">
+            <div class="msg">Lunch at 1?</div>
+            <div class="msg mine">Yes, same place</div>
+            <div class="msg">I'm here already. Where are you?</div>
+          </div>
+          <div class="field"><span class="placeholder">Message</span><span class="text"></span><span class="caret"></span></div>
+          <div class="keyboard">
+            <div class="mic-button"><svg viewBox="0 0 24 24" fill="none" stroke="#1b1b1b" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3" fill="#1b1b1b"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div>
+            <div class="row"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="row"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="row"><span class="mid"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="mid"></span></div>
+            <div class="row"><span class="mid"></span><span></span><span class="wide"></span><span></span><span class="mid"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="ways">
+      <div class="section-head">
+        <div class="label">01 · How you use it</div>
+        <div>
+          <h2>Three ways to start talking, and you can use all of them.</h2>
+          <p>Whichever you pick, a short buzz tells you it's listening, a double buzz tells you it stopped, and a small pill around the camera shows your voice while you speak.</p>
+        </div>
+      </div>
+      <ol class="ways">
+        <li>
+          <span class="num">A</span>
+          <div class="sketch">
+            <svg viewBox="0 0 200 92" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="1" y="6" width="94" height="38" rx="19" opacity=".3"/>
+              <rect x="105" y="6" width="94" height="38" rx="19" opacity=".3"/>
+              <rect x="1" y="52" width="94" height="38" rx="19" fill="currentColor"/>
+              <rect x="105" y="52" width="94" height="38" rx="19" opacity=".3"/>
+              <g stroke="var(--paper)" stroke-width="1.8" stroke-linecap="round"><rect x="19" y="62" width="7" height="12" rx="3.5" fill="var(--paper)"/><path d="M15.5 70a7 7 0 0 0 14 0M22.5 77v3"/></g>
+              <text x="40" y="75" fill="var(--paper)" stroke="none" font-family="Newsreader, serif" font-size="14">Dictate</text>
+            </svg>
+          </div>
+          <h3>The Quick Settings tile</h3>
+          <p>Pull down the shade, tap <i>Dictate</i>. When you stop, the text lands on the clipboard and in a notification. There is also a home-screen widget and a shortcut on the app icon.</p>
+        </li>
+        <li>
+          <span class="num">B</span>
+          <div class="sketch">
+            <svg viewBox="0 0 200 92" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="1" y="40" width="198" height="51" rx="6" opacity=".3"/>
+              <g opacity=".3"><path d="M12 54h14M32 54h14M52 54h14M72 54h14M92 54h14M112 54h14M132 54h14M152 54h14M172 54h14M22 68h14M42 68h14M62 68h14M82 68h14M102 68h14M122 68h14M142 68h14M162 68h14M60 82h80"/></g>
+              <circle cx="176" cy="18" r="15" fill="var(--signal)" stroke="none"/>
+              <g stroke="#fff" stroke-width="1.8" stroke-linecap="round"><rect x="173" y="10" width="6" height="10" rx="3" fill="#fff"/><path d="M170 17a6 6 0 0 0 12 0M176 23v2.5"/></g>
+              <path d="M150 14c-8-6-20-4-26 4" stroke-dasharray="3 3" opacity=".5"/>
+            </svg>
+          </div>
+          <h3>A mic button at the keyboard</h3>
+          <p>Turn on the accessibility service and a small button shows up whenever a keyboard is open, in any app. Dictate, and the text is typed straight into the field. Drag the button where your thumb wants it.</p>
+        </li>
+        <li>
+          <span class="num">C</span>
+          <div class="sketch">
+            <svg viewBox="0 0 200 92" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="1" y="40" width="198" height="51" rx="6" opacity=".3"/>
+              <g opacity=".3"><path d="M12 54h14M32 54h14M52 54h14M72 54h14M92 54h14M112 54h14M132 54h14M152 54h14M172 54h14M50 82h90M160 82h26"/></g>
+              <rect x="14" y="74" width="26" height="16" rx="3" fill="currentColor"/>
+              <g stroke="var(--paper)" stroke-width="1.5" stroke-linecap="round"><rect x="24.5" y="76.5" width="5" height="7" rx="2.5" fill="var(--paper)"/><path d="M22 81a5 5 0 0 0 10 0"/></g>
+              <path d="M27 66V22h40" stroke-dasharray="3 3" opacity=".5"/>
+              <text x="72" y="26" fill="currentColor" stroke="none" font-family="IBM Plex Mono, monospace" font-size="11">your keyboard's mic key</text>
+            </svg>
+          </div>
+          <h3>Your keyboard's own mic key</h3>
+          <p>Voicemator registers as the system's voice input. With FUTO Keyboard, or any keyboard that hands its mic key to the system, that key now opens Voicemator, and you're back at the keyboard when you're done.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="privacy">
+      <div class="section-head">
+        <div class="label">02 · Privacy</div>
+        <div>
+          <h2>Your voice goes from the microphone to the model and nowhere else.</h2>
+        </div>
+      </div>
+      <div class="body-col">
+        <div class="path">
+          <div><b>Microphone</b><span>16 kHz mono</span></div>
+          <div><b>Memory</b><span>never written to disk</span></div>
+          <div><b>Parakeet</b><span>on the phone's CPU</span></div>
+          <div><b>Text</b><span>in your field</span></div>
+        </div>
+        <p class="not-path"><s>cloud</s> <s>account</s> <s>analytics</s> <s>subscription</s></p>
+
+        <div class="two">
+          <div class="prose">
+            <p>The app goes online exactly once: to download the speech model, about 670 MB, over Wi-Fi unless you say otherwise. The file is checked against pinned SHA-256 checksums before it is used. After that you can switch the network off.</p>
+          </div>
+          <div class="prose">
+            <p>The history of your dictations stays on the phone, and you decide how much of it there is: everything, only the numbers (word counts and times, no text), or nothing at all.</p>
+            <p>The code is open, so none of this has to be taken on trust.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="details">
+      <div class="section-head">
+        <div class="label">03 · Details</div>
+        <div>
+          <h2>The small things that make you use it every day.</h2>
+        </div>
+      </div>
+      <dl class="details body-col">
+        <div>
+          <dt>Live preview</dt>
+          <dd>The words show up while you are still speaking. Long dictations are transcribed in pieces as you go, so the text is ready the moment you stop.</dd>
+        </div>
+        <div>
+          <dt>A dictionary of your words</dt>
+          <dd>Teach it the names it keeps getting wrong: <code>voice mator</code> → <code>Voicemator</code>.</dd>
+        </div>
+        <div>
+          <dt>App profiles</dt>
+          <dd>No capital letter and no full stop in messengers, full punctuation in email. Each app can have its own dictionary entries too.</dd>
+        </div>
+        <div>
+          <dt>No “um”</dt>
+          <dd>Hesitation sounds like <i>um</i>, <i>eee</i> and the Polish <i>yyy</i> are dropped before the text reaches you. You can turn this off.</dd>
+        </div>
+        <div>
+          <dt>A final pass</dt>
+          <dd>If you want the best punctuation, Voicemator can read the whole recording again as one piece after you stop. It takes a few seconds.</dd>
+        </div>
+        <div>
+          <dt>Voice messages and recordings</dt>
+          <dd>Share a voice note from WhatsApp or Messenger, or open any audio file, however long. Save the result as text or as SRT subtitles.</dd>
+        </div>
+        <div>
+          <dt>A hands-free toggle</dt>
+          <dd>Set the accessibility shortcut, for example holding both volume keys, and dictation starts without looking at the screen.</dd>
+        </div>
+        <div>
+          <dt>Statistics</dt>
+          <dd>Words today and in total, a streak, your speaking pace, and roughly how much time you saved compared with typing.
+            <div class="heatmap" aria-hidden="true"></div>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section id="languages">
+      <div class="section-head">
+        <div class="label">04 · Languages</div>
+        <div>
+          <h2>25 European languages, no language switch.</h2>
+          <p>Just start talking. The model is <a href="https://huggingface.co/moondream/parakeet-ultra">Parakeet Ultra</a> by Moondream, built on NVIDIA's Parakeet TDT 0.6B v3, and it works out the language by itself.</p>
+        </div>
+      </div>
+      <p class="langs body-col">
+        <span>Bulgarian</span> <span>Croatian</span> <span>Czech</span> <span>Danish</span> <span>Dutch</span> <span>English</span> <span>Estonian</span> <span>Finnish</span> <span>French</span> <span>German</span> <span>Greek</span> <span>Hungarian</span> <span>Italian</span> <span>Latvian</span> <span>Lithuanian</span> <span>Maltese</span> <span>Polish</span> <span>Portuguese</span> <span>Romanian</span> <span>Russian</span> <span>Slovak</span> <span>Slovenian</span> <span>Spanish</span> <span>Swedish</span> <span>Ukrainian</span>
+      </p>
+    </section>
+
+    <section id="install">
+      <div class="section-head">
+        <div class="label">05 · Install</div>
+        <div>
+          <h2>Not on Google Play. Here is what you need instead.</h2>
+          <p>Voicemator is installed from an APK published on GitHub, built and signed by GitHub Actions straight from the source.</p>
+        </div>
+      </div>
+      <div class="two body-col" style="margin-top:0">
+        <table class="specs">
+          <tr><th>System</th><td>Android 14 or newer</td></tr>
+          <tr><th>Processor</th><td>64-bit ARM, which is any recent phone</td></tr>
+          <tr><th>Storage</th><td>About 1 GB, mostly the model. You can delete it in Settings.</td></tr>
+          <tr><th>Memory</th><td>Roughly 1 GB of RAM while transcribing</td></tr>
+          <tr><th>Price</th><td>Free, no ads, no in-app purchases</td></tr>
+        </table>
+        <ol class="steps">
+          <li>Download the APK and open it. Android will ask you to allow installs from your browser.</li>
+          <li>Open Voicemator, allow the microphone and notifications, and download the model.</li>
+          <li>Add the <i>Dictate</i> tile to Quick Settings.</li>
+          <li>For the keyboard button, turn on <i>Voicemator dictation</i> under Settings → Accessibility. If Android says the setting is restricted, open App info, tap ⋮ and allow restricted settings first.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="closing">
+      <h2>Try talking to your phone for a week.</h2>
+      <div class="actions">
+        <a class="button" data-apk href="https://github.com/jakub-m-arch/voicemator/releases/latest">Download the APK <span class="mono" data-version>v0.10.0</span></a>
+        <a class="quiet" href="https://github.com/jakub-m-arch/voicemator/releases">All releases and checksums →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <p>Voicemator is inspired by <a href="https://github.com/Beingpax/VoiceInk">VoiceInk</a> for macOS. Speech recognition runs on <a href="https://github.com/k2-fsa/sherpa-onnx">sherpa-onnx</a>, with <a href="https://huggingface.co/moondream/parakeet-ultra">Parakeet Ultra</a> by Moondream and NVIDIA in the <a href="https://huggingface.co/leogaudin/sherpa-onnx-nemo-parakeet-ultra-int8">int8 conversion</a> by leogaudin, licensed CC BY 4.0.</p>
+      <p>The app is open source under the Apache License 2.0.</p>
+    </div>
+    <div class="right">
+      <a href="https://github.com/jakub-m-arch/voicemator">github.com/jakub-m-arch/voicemator</a><br>
+      <a href="https://github.com/jakub-m-arch/voicemator/issues">Report a problem</a>
+    </div>
+  </footer>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
